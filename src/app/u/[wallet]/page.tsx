@@ -3,11 +3,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 interface Props {
-  params: { wallet: string };
+  params: Promise<{ wallet: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const wallet = params.wallet.toLowerCase();
+  const { wallet: rawWallet } = await params;
+  const wallet = rawWallet.toLowerCase();
   const user = await db.user.findUnique({
     where: { wallet },
     include: { _count: { select: { mintRecords: true } } },
@@ -33,7 +34,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function UserProfilePage({ params }: Props) {
-  const wallet = params.wallet.toLowerCase();
+  const { wallet: rawWallet } = await params;
+  const wallet = rawWallet.toLowerCase();
 
   const user = await db.user.findUnique({
     where: { wallet },
