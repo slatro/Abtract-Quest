@@ -1,0 +1,175 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(cuid())
+  wallet           String            @unique
+  xp               Int               @default(0)
+  riskScore        Int               @default(0)
+  streak           Int               @default(0)
+  lastCheckIn      DateTime?
+  createdAt        DateTime          @default(now())
+  questCompletions QuestCompletion[]
+  quizAttempts     QuizAttempt[]
+  mintRecords      MintRecord[]
+}
+
+model Badge {
+  id             Int          @id
+  name           String
+  emoji          String
+  rarity         Rarity
+  setName        String
+  isMaster       Boolean      @default(false)
+  price          String       @default("free")
+  requiresUnlock Boolean      @default(true)
+  lore           String
+  active         Boolean      @default(true)
+  mintedCount    Int          @default(0)
+  maxSupply      Int?
+  mintRecords    MintRecord[]
+}
+
+model BadgeSet {
+  id            String @id @default(cuid())
+  name          String @unique
+  masterBadgeId Int
+}
+
+model Quest {
+  id          String            @id @default(cuid())
+  title       String
+  description String
+  type        QuestType
+  xpReward    Int
+  badgeId     Int?
+  visitUrl    String?
+  cooldownMin Int               @default(1440)
+  active      Boolean           @default(true)
+  completions QuestCompletion[]
+}
+
+model QuestCompletion {
+  id          String   @id @default(cuid())
+  userId      String
+  questId     String
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  quest       Quest    @relation(fields: [questId], references: [id])
+}
+
+model MintRecord {
+  id       String   @id @default(cuid())
+  userId   String
+  badgeId  Int
+  txHash   String   @unique
+  mintedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id])
+  badge    Badge    @relation(fields: [badgeId], references: [id])
+}
+
+model MintNonce {
+  id        String   @id @default(cuid())
+  nonce     String   @unique
+  wallet    String
+  badgeId   Int
+  used      Boolean  @default(false)
+  expiry    DateTime
+  createdAt DateTime @default(now())
+}
+
+model Quiz {
+  id         String         @id @default(cuid())
+  title      String
+  category   String
+  difficulty String         @default("medium")
+  badgeId    Int?
+  active     Boolean        @default(true)
+  questions  QuizQuestion[]
+  attempts   QuizAttempt[]
+}
+
+model QuizQuestion {
+  id           String   @id @default(cuid())
+  quizId       String
+  question     String
+  answers      String[] // 4 cevap, karışık sırada frontend'e gider
+  correctIndex Int      // doğru cevabın indexi, frontend'e GÖNDERİLMEZ
+  explanation  String
+  quiz         Quiz     @relation(fields: [quizId], references: [id])
+}
+
+model QuizAttempt {
+  id          String   @id @default(cuid())
+  userId      String
+  quizId      String
+  score       Int
+  totalQ      Int
+  passed      Boolean
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  quiz        Quiz     @relation(fields: [quizId], references: [id])
+}
+
+model Blocklist {
+  id        String   @id @default(cuid())
+  wallet    String   @unique
+  reason    String?
+  createdAt DateTime @default(now())
+}
+
+model Allowlist {
+  id        String   @id @default(cuid())
+  wallet    String   @unique
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+model EcosystemProject {
+  id             String          @id @default(cuid())
+  name           String
+  description    String
+  category       String
+  websiteUrl     String
+  referralUrl    String?
+  twitterUrl     String?
+  discordUrl     String?
+  telegramUrl    String?
+  active         Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  referralClicks ReferralClick[]
+}
+
+model ReferralClick {
+  id        String           @id @default(cuid())
+  projectId String
+  wallet    String?
+  questId   String?
+  refUsed   Boolean          @default(false)
+  clickedAt DateTime         @default(now())
+  project   EcosystemProject @relation(fields: [projectId], references: [id])
+}
+
+enum Rarity {
+  common
+  uncommon
+  rare
+  epic
+  legendary
+}
+
+enum QuestType {
+  daily
+  visit
+  social
+  quiz
+  streak
+  hidden
+}
