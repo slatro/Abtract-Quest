@@ -53,7 +53,14 @@ export async function signUnlockPayload(
     domain,
     types,
     primaryType: "UnlockPayload",
-    message: payload,
+    message: {
+      user: payload.user,
+      badgeId: BigInt(payload.badgeId),
+      chainId: BigInt(payload.chainId),
+      contractAddress: payload.contractAddress,
+      nonce: payload.nonce as `0x${string}`,
+      expiry: BigInt(payload.expiry),
+    },
   });
 
   return { payload, signature };

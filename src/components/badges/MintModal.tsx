@@ -23,6 +23,7 @@ export function MintModal({ badge, onClose }: Props) {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   if (!badge) return null;
+  const currentBadge = badge;
 
   async function handleMint() {
     if (!address) return;
@@ -34,7 +35,7 @@ export function MintModal({ badge, onClose }: Props) {
       const unlockRes = await fetch("/api/badges/unlock", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ wallet: address, badgeId: badge.id, turnstileToken }),
+        body: JSON.stringify({ wallet: address, badgeId: currentBadge.id, turnstileToken }),
       });
 
       if (!unlockRes.ok) {
@@ -45,9 +46,9 @@ export function MintModal({ badge, onClose }: Props) {
       const { data }: { data: UnlockSignatureResponse } = await unlockRes.json();
 
       // 2. ETH değerini hesapla
-      const value = badge.price === "free"
+      const value = currentBadge.price === "free"
         ? 0n
-        : parseEther(badge.price.replace(" ETH", ""));
+        : parseEther(currentBadge.price.replace(" ETH", ""));
 
       // 3. Kontratı çağır
       const hash = await writeContractAsync({
@@ -55,7 +56,7 @@ export function MintModal({ badge, onClose }: Props) {
         abi: BADGE_RUSH_ABI.abi,
         functionName: "mint",
         args: [
-          BigInt(badge.id),
+          BigInt(currentBadge.id),
           data.payload.nonce,
           BigInt(data.payload.expiry),
           data.signature,
@@ -67,7 +68,7 @@ export function MintModal({ badge, onClose }: Props) {
       await fetch("/api/badges/mint-confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ wallet: address, badgeId: badge.id, txHash: hash }),
+        body: JSON.stringify({ wallet: address, badgeId: currentBadge.id, txHash: hash }),
       });
 
       setTxHash(hash);
