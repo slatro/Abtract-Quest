@@ -1,38 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Abstract Quests
 
-## Getting Started
+Abstract Quests is a badge-collecting quest app built on Abstract mainnet.
 
-First, run the development server:
+Users can:
+- connect with AGW
+- complete quests and quizzes
+- unlock badge eligibility
+- mint ERC-1155 badges
+- track collection progress, streaks, and leaderboard rank
+
+## Stack
+
+- Next.js App Router
+- TypeScript
+- Prisma
+- Wagmi
+- Viem
+- Hardhat
+- PostgreSQL-compatible local DB setup
+
+## Main Features
+
+- wallet-based user profiles
+- badge gallery with unlock and mint states
+- daily check-in and streak logic
+- quiz and quest progression
+- leaderboard
+- ecosystem discovery page
+- admin tools for stats, unlocks, and moderation
+
+## Local Development
+
+Run the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Notes
 
-## Learn More
+- badges are one mint per wallet
+- unlock state and mint state are tracked separately
+- some badge requirements are live, and some are planned / not live yet
+- UI assets and badge art live under `public/badge-art` and `public/brand`
 
-To learn more about Next.js, take a look at the following resources:
+## Repository Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Abstract Quests
-# Abtract-Quest
+- `src/app` — pages and API routes
+- `src/components` — UI components
+- `src/lib` — app logic and helpers
+- `prisma` — schema and seed files
+- `contracts` — smart contracts
+- `public` — static assets

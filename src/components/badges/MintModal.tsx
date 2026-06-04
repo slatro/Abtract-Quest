@@ -177,15 +177,15 @@ export function MintModal({ badge, onClose }: Props) {
             </div>
 
             <div className="mb-4">
-              <div className="mx-auto mb-3 h-px w-40 bg-[linear-gradient(90deg,transparent,rgba(61,255,160,0.45),rgba(255,255,255,0.5),rgba(61,255,160,0.45),transparent)]" />
+              <div className="mx-auto mb-3 h-px w-44 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.1),rgba(255,255,255,0.55),rgba(61,255,160,0.28),transparent)]" />
               <p className="text-center text-[14px] leading-relaxed text-white/74">
                 {badge.lore}
               </p>
             </div>
 
-            <div className={`mb-4 overflow-hidden rounded-[24px] border px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] ${requirementPanel}`}>
+            <div className={`mb-4 overflow-hidden rounded-[24px] border px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_18px_36px_rgba(0,0,0,0.16)] ${requirementPanel}`}>
               <div className="mb-3 flex items-center justify-between gap-3">
-                <span className="pl-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/42">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/42">
                   Unlock requirement
                 </span>
                 <span
@@ -198,10 +198,10 @@ export function MintModal({ badge, onClose }: Props) {
                   {requirement.availability === "live" ? "Live now" : "Not live yet"}
                 </span>
               </div>
-              <div className="mb-3 pl-3 text-left text-[16px] font-semibold text-white">{requirement.headline}</div>
+              <div className="mb-3 text-left text-[16px] font-semibold text-white">{requirement.headline}</div>
               <ul className="grid gap-2 text-left text-[13px] leading-relaxed text-white/70">
                 {requirement.bullets.map((bullet) => (
-                  <li key={bullet} className="grid grid-cols-[10px_1fr] items-start gap-3 pl-3">
+                  <li key={bullet} className="grid grid-cols-[10px_1fr] items-start gap-3">
                     <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-white/35" />
                     <span>{bullet}</span>
                   </li>

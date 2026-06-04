@@ -66,7 +66,7 @@ export default function DashboardPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
       {/* Profile */}
-      <div className="surface-panel-tint rounded-[28px] p-4 sm:p-5 self-start lg:sticky lg:top-20">
+      <div className="surface-panel rounded-[28px] p-4 sm:p-5 self-start lg:sticky lg:top-20">
         <div className="mb-4 flex items-start justify-between gap-3">
           <div className="w-14 h-14 rounded-2xl surface-panel-soft flex items-center justify-center text-2xl">
           🦊
@@ -76,7 +76,7 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="font-mono text-[11px] text-text-2 mb-3 break-all">{address}</div>
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold chip-gold mb-5">
+        <div className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-white/8 bg-white/[0.03] px-2.5 py-1 text-xs font-semibold text-white/80">
           🏆 Quest Sweeper
         </div>
         <div className="grid grid-cols-2 gap-2 mb-4">
@@ -108,7 +108,7 @@ export default function DashboardPage() {
         <div className="mb-6 rounded-[30px] surface-panel p-5 sm:p-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <div className="mb-3 inline-flex rounded-full chip-green px-3 py-1 text-[11px] font-mono uppercase tracking-[0.16em]">
+              <div className="mb-3 inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-mono uppercase tracking-[0.16em] text-white/66">
                 Live Progress
               </div>
               <h1 className="text-3xl font-bold tracking-tight text-white sm:text-[38px]">
@@ -139,7 +139,7 @@ export default function DashboardPage() {
             ].map((item) => (
               <div key={item.label} className="surface-panel-soft rounded-2xl p-4">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/42">{item.label}</div>
-                <div className="mt-2 text-3xl font-bold text-[#e8f0e9]">{item.value}</div>
+                <div className="mt-2 text-3xl font-bold text-[#eef2f6]">{item.value}</div>
                 <div className="text-[11px] text-text-3 mt-2">{item.helper}</div>
               </div>
             ))}
@@ -149,24 +149,24 @@ export default function DashboardPage() {
 
         <div className="mb-6">
         {nextCrest && (
-          <div className="mb-6 surface-panel-gold rounded-[28px] p-5 sm:p-6">
+          <div className="mb-6 rounded-[28px] border border-white/8 bg-[linear-gradient(180deg,rgba(34,37,42,0.95),rgba(20,22,26,0.98))] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_16px_36px_rgba(0,0,0,0.16)] sm:p-6">
             <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
               <div>
-                <div className="text-[11px] font-mono text-yellow-400/80 mb-1 uppercase tracking-[0.16em]">Next Crest</div>
-                <h2 className="text-[24px] font-bold text-[#f5ecd3]">{nextCrest.setName}</h2>
-                <p className="text-sm text-[#c9bea0] mt-1">
+                <div className="mb-1 text-[11px] font-mono uppercase tracking-[0.16em] text-white/48">Next Crest</div>
+                <h2 className="text-[24px] font-bold text-[#f3f5f7]">{nextCrest.setName}</h2>
+                <p className="mt-1 text-sm text-white/62">
                   {nextCrest.ownedCount}/{nextCrest.total} set badges owned
                   {nextCrest.crestUnlocked && !nextCrest.crestOwned ? " · Crest unlocked, mint waiting" : ""}
                 </p>
               </div>
               <div className="sm:min-w-24 sm:text-right">
-                <div className="text-2xl font-bold text-yellow-400">{nextCrest.percent}%</div>
-                <div className="text-[11px] text-[#a79465]">completion</div>
+                <div className="text-2xl font-bold text-white">{nextCrest.percent}%</div>
+                <div className="text-[11px] text-white/42">completion</div>
               </div>
             </div>
             <div className="mt-5 h-2.5 rounded-full progress-track overflow-hidden">
               <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#7c5b14,#ffd54a)]"
+                className="h-full rounded-full bg-[linear-gradient(90deg,#95a0ad,#eef2f6)]"
                 style={{ width: `${nextCrest.percent}%` }}
               />
             </div>
