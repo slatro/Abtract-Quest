@@ -16,36 +16,61 @@ export function Nav() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-bg/90 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto h-[72px] px-6 py-3 relative flex items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2 font-bold text-sm text-[#e8f0e9] shrink-0">
-          <span className="w-8 h-8 rounded-lg bg-card border border-border-2 flex items-center justify-center text-sm">⬡</span>
-          Portal Badge Rush
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-green-dim text-green border border-green/20 ml-1">
-            Abstract
-          </span>
-        </Link>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 relative">
+        <div className="min-h-[52px] md:h-[72px] relative flex items-center justify-between gap-3">
+          <Link href="/" className="flex items-center gap-3 font-bold text-sm text-[#e8f0e9] shrink min-w-0">
+            <span className="w-10 h-10 rounded-xl surface-panel-soft flex items-center justify-center text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+              ⬡
+            </span>
+            <span className="truncate text-[15px]">Abstract Quests</span>
+            <span className="hidden sm:inline text-[10px] font-mono px-2.5 py-1 rounded-full chip-green ml-1">
+              Quest Arcade
+            </span>
+          </Link>
 
-        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1.5 bg-[#0f1416]/90 border border-border rounded-full p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
-          {items.map(({ href, label }) => {
-            const active = pathname?.startsWith(href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                  active
-                    ? "bg-green/20 text-green"
-                    : "text-[#aeb8af] hover:text-[#e8f0e9] hover:bg-white/5"
-                }`}
-              >
-                {label}
-              </Link>
-            );
-          })}
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1.5 surface-panel rounded-full p-1.5">
+            {items.map(({ href, label }) => {
+              const active = pathname?.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                    active
+                      ? "surface-panel-soft text-[#eff7f0] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                      : "text-[#aeb8af] hover:text-[#e8f0e9] hover:bg-white/[0.035]"
+                  }`}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="shrink-0">
+            <ConnectButton />
+          </div>
         </div>
 
-        <div className="shrink-0">
-          <ConnectButton />
+        <div className="md:hidden mt-3 -mx-1 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex min-w-max items-center gap-1.5 surface-panel rounded-full p-1.5">
+            {items.map(({ href, label }) => {
+              const active = pathname?.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${
+                    active
+                      ? "surface-panel-soft text-[#eff7f0]"
+                      : "text-[#aeb8af] hover:text-[#e8f0e9] hover:bg-white/[0.035]"
+                  }`}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </nav>

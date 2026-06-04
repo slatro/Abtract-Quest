@@ -4,6 +4,7 @@ import { signUnlockPayload } from "@/lib/signer";
 import { rateLimit, getIP } from "@/lib/rateLimit";
 import { isBlocked } from "@/lib/checkBlocklist";
 import { verifyTurnstile } from "@/lib/verifyTurnstile";
+import { getUnlockedBadgeIds } from "@/lib/badgeUnlocks";
 
 export async function POST(req: NextRequest) {
   // IP başına dakikada 10 unlock isteği
@@ -59,20 +60,50 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Badge not available" }, { status: 404 });
   }
 
-  // Master badge ise set tamamlanmış mı?
-  if (badge.isMaster) {
-    const setMembers = await db.badge.findMany({
-      where: { setName: badge.setName, isMaster: false },
-      select: { id: true },
-    });
-    const memberIds = setMembers.map((b) => b.id);
-    const ownedInSet = await db.mintRecord.count({
-      where: {
-        badgeId: { in: memberIds },
-        user: { wallet: walletLower },
+  const badges = await db.badge.findMany({
+    orderBy: [{ setName: "asc" }, { id: "asc" }],
+  });
+
+  const user = await db.user.upsert({
+    where: { wallet: walletLower },
+    update: {},
+    create: { wallet: walletLower },
+  });
+
+  const userWithProgress = await db.user.findUnique({
+    where: { id: user.id },
+    include: {
+      mintRecords: { select: { badgeId: true } },
+      badgeUnlocks: { select: { badgeId: true } },
+      questCompletions: {
+        include: {
+          quest: { select: { badgeId: true } },
+        },
       },
-    });
-    if (ownedInSet < memberIds.length) {
+      quizAttempts: {
+        where: { passed: true },
+        include: {
+          quiz: { select: { badgeId: true } },
+        },
+      },
+    },
+  });
+
+  if (!userWithProgress) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  const unlockedIds = getUnlockedBadgeIds(userWithProgress, badges);
+  if (badge.requiresUnlock && !unlockedIds.has(Number(badgeId))) {
+    return NextResponse.json({ error: "Badge not unlocked yet" }, { status: 403 });
+  }
+
+  if (badge.isMaster) {
+    const setMembers = badges.filter((item) => item.setName === badge.setName && !item.isMaster);
+    const memberIds = setMembers.map((item) => item.id);
+    const ownedIds = new Set(userWithProgress.mintRecords.map((record) => record.badgeId));
+    const fullSetOwned = memberIds.every((id) => ownedIds.has(id));
+    if (!fullSetOwned) {
       return NextResponse.json({ error: "Complete the full set first" }, { status: 403 });
     }
   }

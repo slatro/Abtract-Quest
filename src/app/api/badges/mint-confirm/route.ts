@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { createPublicClient, http, type Chain } from "viem";
+import { persistBadgeUnlock } from "@/lib/badgeUnlocks";
 
 const abstractMainnet = {
   id: 2741,
@@ -60,6 +61,34 @@ export async function POST(req: NextRequest) {
       data: { used: true },
     }),
   ]);
+
+  if (badge && !badge.isMaster) {
+    const setMembers = await db.badge.findMany({
+      where: { setName: badge.setName, isMaster: false },
+      select: { id: true },
+    });
+
+    const ownedInSet = await db.mintRecord.findMany({
+      where: {
+        userId: user.id,
+        badgeId: { in: setMembers.map((member) => member.id) },
+      },
+      select: { badgeId: true },
+    });
+
+    const ownedIds = new Set(ownedInSet.map((record) => record.badgeId));
+    const fullSetOwned = setMembers.every((member) => ownedIds.has(member.id));
+
+    if (fullSetOwned) {
+      const masterBadge = await db.badge.findFirst({
+        where: { setName: badge.setName, isMaster: true },
+        select: { id: true },
+      });
+      if (masterBadge) {
+        await persistBadgeUnlock(user.id, masterBadge.id, "full_set", badge.setName);
+      }
+    }
+  }
 
   return NextResponse.json({ data: { success: true, xpGained: xpGain } });
 }

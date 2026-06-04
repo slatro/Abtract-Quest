@@ -28,11 +28,44 @@ export default function LeaderboardPage() {
     3: "text-amber-600",
   };
 
+  const topUser = leaderboard[0] ?? null;
+  const myEntry = leaderboard.find((user: any) => address?.toLowerCase() === user.wallet.toLowerCase()) ?? null;
+
   return (
-    <div className="max-w-2xl mx-auto px-6 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight mb-1">Leaderboard</h1>
-        <p className="text-sm text-text-2">Badge collectors ranked by XP.</p>
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="mb-6 rounded-[30px] surface-panel p-5 sm:p-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-xl">
+            <div className="mb-3 inline-flex rounded-full chip-gold px-3 py-1 text-[11px] font-mono uppercase tracking-[0.16em]">
+              Ranking Feed
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-[38px]">Collectors, crests, streaks, and XP.</h1>
+            <p className="mt-3 text-sm leading-7 text-white/62">See who is actually pushing the board, not just collecting one-off drops.</p>
+          </div>
+
+          {topUser && (
+            <div className="surface-panel-soft rounded-[24px] px-5 py-4 lg:min-w-[250px]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/42">Current leader</div>
+              <div className="mt-2 font-mono text-sm text-white">{topUser.wallet.slice(0, 6)}...{topUser.wallet.slice(-4)}</div>
+              <div className="mt-3 text-3xl font-bold text-green">{topUser.xp.toLocaleString()}</div>
+              <div className="mt-1 text-xs text-white/50">{topUser.masterCount} crests · {topUser.badgeCount} badges</div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        {[
+          { label: "Collectors", value: leaderboard.length },
+          { label: "Top XP", value: topUser?.xp?.toLocaleString?.() ?? "0" },
+          { label: "Top crests", value: topUser?.masterCount ?? 0 },
+          { label: "Your rank", value: myEntry ? `#${myEntry.rank}` : "—" },
+        ].map((item) => (
+          <div key={item.label} className="surface-panel-soft rounded-[22px] p-4">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/42">{item.label}</div>
+            <div className="mt-2 text-3xl font-bold text-[#e8f0e9]">{item.value}</div>
+          </div>
+        ))}
       </div>
 
       {isLoading ? (
@@ -45,35 +78,35 @@ export default function LeaderboardPage() {
             return (
               <div
                 key={user.wallet}
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl border transition-all ${
+                className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-3 rounded-[22px] border transition-all ${
                   isMe
-                    ? "border-green/30 bg-green/5"
-                    : rankStyles[user.rank] ?? "border-border bg-card"
+                    ? "surface-panel-tint border-green/20"
+                    : rankStyles[user.rank] ?? "surface-panel"
                 }`}
               >
-                <span className={`font-mono text-sm font-bold min-w-7 ${rankColors[user.rank] ?? "text-text-3"}`}>
+                <span className={`font-mono text-sm font-bold min-w-8 ${rankColors[user.rank] ?? "text-text-3"}`}>
                   #{user.rank}
                 </span>
 
-                <div className="w-9 h-9 rounded-xl bg-bg2 border border-border flex items-center justify-center text-base">
+                <div className="w-9 h-9 rounded-xl surface-panel-soft flex items-center justify-center text-base shrink-0">
                   {["🦅", "👺", "🦊", "🔬", "🔥", "🎓", "🛋️", "🏗️"][user.rank % 8]}
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold font-mono truncate">
+                  <div className="text-xs sm:text-sm font-semibold font-mono truncate">
                     {user.wallet.slice(0, 6)}...{user.wallet.slice(-4)}
                     {isMe && (
-                      <span className="ml-2 text-[10px] text-green bg-green/10 px-1.5 py-0.5 rounded font-sans">
+                      <span className="ml-2 chip-green px-1.5 py-0.5 rounded font-sans">
                         YOU
                       </span>
                     )}
                   </div>
-                  <div className="text-xs text-text-3">
+                  <div className="text-[11px] sm:text-xs text-text-3">
                     {user.badgeCount} badges · {user.masterCount} crests · {user.streak}🔥
                   </div>
                 </div>
 
-                <div className="text-right">
+                <div className="text-right shrink-0">
                   <div className="text-sm font-bold text-green">{user.xp.toLocaleString()}</div>
                   <div className="text-[10px] text-text-3">XP</div>
                 </div>

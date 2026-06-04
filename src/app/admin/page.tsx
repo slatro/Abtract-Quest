@@ -14,6 +14,10 @@ export default function AdminPage() {
   const [blocklist, setBlocklist] = useState<any[]>([]);
   const [blockWallet, setBlockWallet] = useState("");
   const [blockReason, setBlockReason] = useState("");
+  const [unlockWallet, setUnlockWallet] = useState("");
+  const [unlockBadgeId, setUnlockBadgeId] = useState("");
+  const [walletLookup, setWalletLookup] = useState("");
+  const [walletUnlockData, setWalletUnlockData] = useState<any | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   function showToast(msg: string) {
@@ -61,6 +65,17 @@ export default function AdminPage() {
     setBlocklist(json.data ?? []);
   }
 
+  async function loadWalletUnlocks(wallet: string) {
+    const res = await adminFetch(`/api/admin/unlocks?wallet=${encodeURIComponent(wallet)}`);
+    const json = await res.json();
+    if (!res.ok) {
+      setWalletUnlockData(null);
+      showToast(json.error ?? "Wallet lookup failed.");
+      return;
+    }
+    setWalletUnlockData(json.data);
+  }
+
   async function toggleBadge(id: number, active: boolean) {
     await adminFetch("/api/admin/badges", {
       method: "PATCH",
@@ -97,6 +112,25 @@ export default function AdminPage() {
     });
     await loadBlocklist();
     showToast("Wallet unblocked.");
+  }
+
+  async function manualUnlockAction() {
+    if (!unlockWallet || !unlockBadgeId) return;
+
+    const res = await adminFetch("/api/admin/unlock-manual", {
+      method: "POST",
+      body: JSON.stringify({ wallet: unlockWallet, badgeId: Number(unlockBadgeId) }),
+    });
+    const json = await res.json();
+
+    if (!res.ok) {
+      showToast(json.error ?? "Manual unlock failed.");
+      return;
+    }
+
+    showToast(`Badge #${unlockBadgeId} unlocked for wallet.`);
+    setUnlockBadgeId("");
+    await loadWalletUnlocks(unlockWallet);
   }
 
   useEffect(() => {
@@ -175,6 +209,7 @@ export default function AdminPage() {
             {[
               { label: "Total users", val: stats.totalUsers },
               { label: "Total mints", val: stats.totalMints },
+              { label: "Total unlocks", val: stats.totalUnlocks },
               { label: "Quest completions", val: stats.totalQuestCompletions },
             ].map(s => (
               <div key={s.label} className="bg-card border border-border rounded-xl p-5">
@@ -200,17 +235,17 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Risky users */}
+            {/* Recent unlocks */}
             <div>
-              <h2 className="text-sm font-semibold mb-3">⚠️ High risk users</h2>
-              {stats.riskyUsers.length === 0 ? (
-                <p className="text-xs text-text-3">No suspicious activity detected.</p>
+              <h2 className="text-sm font-semibold mb-3">Recent unlocks</h2>
+              {stats.recentUnlocks.length === 0 ? (
+                <p className="text-xs text-text-3">No unlocks recorded yet.</p>
               ) : (
                 <div className="flex flex-col gap-2">
-                  {stats.riskyUsers.map((u: any) => (
-                    <div key={u.wallet} className="flex items-center justify-between px-3 py-2 bg-red-400/5 border border-red-400/20 rounded-lg text-xs">
-                      <span className="font-mono">{u.wallet.slice(0, 10)}...</span>
-                      <span className="text-red-400">Risk: {u.riskScore}</span>
+                  {stats.recentUnlocks.map((u: any) => (
+                    <div key={u.id} className="flex items-center justify-between px-3 py-2 bg-card border border-border rounded-lg text-xs">
+                      <span className="font-mono text-text-2">{u.user.wallet.slice(0, 10)}...</span>
+                      <span className="text-green">{u.badge.name}</span>
                     </div>
                   ))}
                 </div>
@@ -274,6 +309,81 @@ export default function AdminPage() {
       {/* USERS */}
       {tab === "users" && stats && (
         <div>
+          <div className="grid grid-cols-[1fr_auto] gap-3 mb-6">
+            <input
+              placeholder="Wallet lookup"
+              value={walletLookup}
+              onChange={(e) => setWalletLookup(e.target.value)}
+              className="bg-bg2 border border-border rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:border-green"
+            />
+            <button
+              onClick={() => loadWalletUnlocks(walletLookup)}
+              className="px-4 py-2.5 rounded-xl bg-green text-[#061009] font-semibold text-sm"
+            >
+              Load unlocks
+            </button>
+          </div>
+
+          <div className="grid grid-cols-[1fr_160px_auto] gap-3 mb-6">
+            <input
+              placeholder="Manual unlock wallet"
+              value={unlockWallet}
+              onChange={(e) => setUnlockWallet(e.target.value)}
+              className="bg-bg2 border border-border rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:border-green"
+            />
+            <input
+              placeholder="Badge ID"
+              value={unlockBadgeId}
+              onChange={(e) => setUnlockBadgeId(e.target.value)}
+              className="bg-bg2 border border-border rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:border-green"
+            />
+            <button
+              onClick={manualUnlockAction}
+              className="px-4 py-2.5 rounded-xl bg-green text-[#061009] font-semibold text-sm"
+            >
+              Manual unlock
+            </button>
+          </div>
+
+          {walletUnlockData && (
+            <div className="mb-8">
+              <div className="mb-3">
+                <div className="font-mono text-sm">{walletUnlockData.wallet}</div>
+                <div className="text-xs text-text-3">
+                  {walletUnlockData.xp} XP · {walletUnlockData.streak} streak · {walletUnlockData.unlocks.length} unlocks
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 mb-8">
+                {walletUnlockData.unlocks.map((unlock: any) => (
+                  <div key={unlock.id} className="flex items-center justify-between px-4 py-3 bg-card border border-border rounded-xl">
+                    <div>
+                      <div className="text-sm font-semibold">
+                        #{unlock.badge.id} {unlock.badge.name}
+                      </div>
+                      <div className="text-xs text-text-3">
+                        {unlock.badge.setName} · {unlock.source}
+                        {unlock.sourceRef ? ` · ${unlock.sourceRef}` : ""}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className={`text-xs font-semibold ${unlock.owned ? "text-green" : "text-amber-400"}`}>
+                        {unlock.owned ? "Minted" : "Unlocked"}
+                      </div>
+                      <div className="text-[10px] text-text-3">
+                        {new Date(unlock.unlockedAt).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {walletUnlockData.unlocks.length === 0 && (
+                  <p className="text-sm text-text-2">No unlocks recorded for this wallet.</p>
+                )}
+              </div>
+            </div>
+          )}
+
           <h2 className="text-sm font-semibold mb-3">High risk users</h2>
           {stats.riskyUsers.length === 0 ? (
             <p className="text-sm text-text-2">No suspicious activity detected.</p>

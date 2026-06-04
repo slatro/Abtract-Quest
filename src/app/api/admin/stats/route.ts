@@ -8,13 +8,16 @@ export async function GET(req: NextRequest) {
   const [
     totalUsers,
     totalMints,
+    totalUnlocks,
     totalQuestCompletions,
     topBadges,
     recentMints,
+    recentUnlocks,
     riskyUsers,
   ] = await Promise.all([
     db.user.count(),
     db.mintRecord.count(),
+    db.badgeUnlock.count(),
     db.questCompletion.count(),
     db.mintRecord.groupBy({
       by: ["badgeId"],
@@ -27,6 +30,14 @@ export async function GET(req: NextRequest) {
       orderBy: { mintedAt: "desc" },
       include: { user: { select: { wallet: true } }, badge: { select: { name: true } } },
     }),
+    db.badgeUnlock.findMany({
+      take: 20,
+      orderBy: { unlockedAt: "desc" },
+      include: {
+        user: { select: { wallet: true } },
+        badge: { select: { name: true } },
+      },
+    }),
     db.user.findMany({
       where: { riskScore: { gte: 20 } },
       orderBy: { riskScore: "desc" },
@@ -38,9 +49,11 @@ export async function GET(req: NextRequest) {
     data: {
       totalUsers,
       totalMints,
+      totalUnlocks,
       totalQuestCompletions,
       topBadges,
       recentMints,
+      recentUnlocks,
       riskyUsers,
     },
   });

@@ -19,6 +19,7 @@ model User {
   questCompletions QuestCompletion[]
   quizAttempts     QuizAttempt[]
   mintRecords      MintRecord[]
+  badgeUnlocks     BadgeUnlock[]
 }
 
 model Badge {
@@ -35,6 +36,7 @@ model Badge {
   mintedCount    Int          @default(0)
   maxSupply      Int?
   mintRecords    MintRecord[]
+  badgeUnlocks   BadgeUnlock[]
 }
 
 model BadgeSet {
@@ -83,6 +85,19 @@ model MintNonce {
   used      Boolean  @default(false)
   expiry    DateTime
   createdAt DateTime @default(now())
+}
+
+model BadgeUnlock {
+  id         String       @id @default(cuid())
+  userId     String
+  badgeId    Int
+  source     UnlockSource
+  sourceRef  String?
+  unlockedAt DateTime     @default(now())
+  user       User         @relation(fields: [userId], references: [id])
+  badge      Badge        @relation(fields: [badgeId], references: [id])
+
+  @@unique([userId, badgeId])
 }
 
 model Quiz {
@@ -172,4 +187,15 @@ enum QuestType {
   quiz
   streak
   hidden
+}
+
+enum UnlockSource {
+  default_access
+  quest
+  checkin
+  streak
+  quiz
+  perfect_score
+  full_set
+  admin
 }

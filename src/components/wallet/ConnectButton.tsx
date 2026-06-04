@@ -20,7 +20,7 @@ export function ConnectButton() {
 
   if (isConnecting) {
     return (
-      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-sm text-[#aeb8af]">
+      <div className="surface-panel-soft flex items-center gap-2 px-4 py-2 rounded-full text-sm text-[#aeb8af]">
         <span className="w-2 h-2 rounded-full bg-green animate-pulse" />
         Connecting...
       </div>
@@ -31,13 +31,13 @@ export function ConnectButton() {
     return (
       <button
         onClick={() => logout()}
-        className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border-2 text-sm hover:border-green/30 hover:bg-green/5 transition-colors"
+        className="surface-panel-soft flex items-center gap-2 px-4 py-2 rounded-full text-sm hover:border-white/10 hover:bg-white/[0.035] transition-colors"
       >
         <span className="w-2 h-2 rounded-full bg-green shadow-[0_0_8px_#3dffa0]" />
         <span className="font-mono text-xs text-[#d7e6d8]">
           {address.slice(0, 6)}...{address.slice(-4)}
         </span>
-        <span className="text-[10px] text-green font-semibold">AGW</span>
+        <span className="chip-green px-1.5 py-0.5 rounded-full text-[10px] font-semibold leading-none">AGW</span>
       </button>
     );
   }
@@ -45,7 +45,7 @@ export function ConnectButton() {
   return (
     <button
       onClick={() => login()}
-      className="px-6 py-2.5 rounded-full bg-green text-[#061009] text-sm font-bold hover:bg-[#56ffad] transition-colors"
+      className="rounded-full bg-[linear-gradient(180deg,#56ffad_0%,#35f39a_100%)] px-5 py-2.5 text-sm font-bold text-[#061009] shadow-[0_10px_24px_rgba(61,255,160,0.18)] transition-all hover:translate-y-[-1px] hover:shadow-[0_14px_30px_rgba(61,255,160,0.22)]"
     >
       Connect AGW
     </button>

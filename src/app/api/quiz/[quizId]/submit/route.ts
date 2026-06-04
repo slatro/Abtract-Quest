@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { rateLimit, getIP } from "@/lib/rateLimit";
 import { incrementRisk } from "@/lib/riskScoring";
+import { persistBadgeUnlock } from "@/lib/badgeUnlocks";
 
 export async function POST(
   req: NextRequest,
@@ -109,6 +110,14 @@ export async function POST(
   let unlockedBadgeId: number | null = null;
   if (passed && quiz.badgeId) unlockedBadgeId = quiz.badgeId;
   if (perfectScore) unlockedBadgeId = 39; // Perfect Score badge
+
+  if (passed && quiz.badgeId) {
+    await persistBadgeUnlock(user.id, quiz.badgeId, "quiz", quizId);
+  }
+
+  if (perfectScore) {
+    await persistBadgeUnlock(user.id, 39, "perfect_score", quizId);
+  }
 
   return NextResponse.json({
     data: {

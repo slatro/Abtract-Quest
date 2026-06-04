@@ -7,7 +7,10 @@ export async function GET(req: NextRequest) {
 
   const user = await db.user.findUnique({
     where: { wallet: wallet.toLowerCase() },
-    include: { mintRecords: { select: { badgeId: true } } },
+    include: {
+      mintRecords: { select: { badgeId: true } },
+      badgeUnlocks: { select: { badgeId: true } },
+    },
   });
 
   if (!user) return NextResponse.json({ error: "not found" }, { status: 404 });
@@ -16,6 +19,7 @@ export async function GET(req: NextRequest) {
     data: {
       ...user,
       ownedBadgeIds: user.mintRecords.map((r) => r.badgeId),
+      unlockedBadgeIds: user.badgeUnlocks.map((r) => r.badgeId),
     },
   });
 }

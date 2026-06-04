@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import { useParams, useRouter } from "next/navigation";
 
@@ -9,6 +9,7 @@ type Phase = "intro" | "question" | "result";
 
 export default function QuizPage() {
   const { address } = useAccount();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const params = useParams<{ quizId: string }>();
   const quizId = `quiz-${params.quizId}`;
@@ -38,6 +39,12 @@ export default function QuizPage() {
       return res.json();
     },
     onSuccess: (data) => {
+      if (data.error) return;
+      queryClient.invalidateQueries({ queryKey: ["badges", address] });
+      queryClient.invalidateQueries({ queryKey: ["user", address] });
+      queryClient.invalidateQueries({ queryKey: ["quests", address] });
+      queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
+      queryClient.invalidateQueries({ queryKey: ["quiz"] });
       setResult(data.data);
       setPhase("result");
     },

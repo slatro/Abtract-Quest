@@ -58,6 +58,7 @@ export interface User {
   streak: number;
   lastCheckIn: string | null;
   ownedBadgeIds: number[];
+  unlockedBadgeIds?: number[];
 }
 
 export interface UnlockPayload {

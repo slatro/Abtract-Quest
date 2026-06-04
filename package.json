@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@abstract-foundation/agw-react": "^1.13.0",
+    "@iconify-json/game-icons": "^1.2.4",
+    "@iconify/react": "^6.0.2",
     "@marsidev/react-turnstile": "^1.5.1",
     "@openzeppelin/contracts": "^5.0.2",
     "@prisma/adapter-pg": "^6.19.3",

@@ -13,9 +13,85 @@
 }
 
 body {
-  background: #080c0a;
+  background:
+    radial-gradient(circle at top left, rgba(61, 255, 160, 0.08), transparent 26%),
+    radial-gradient(circle at top right, rgba(96, 200, 255, 0.06), transparent 24%),
+    radial-gradient(circle at bottom center, rgba(255, 215, 0, 0.04), transparent 28%),
+    linear-gradient(180deg, #0a0f0c 0%, #0c120f 48%, #0a0e0c 100%);
   color: #e8f0e9;
   font-family: 'Space Grotesk', sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent 18%),
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.025), transparent 32%);
+  opacity: 0.9;
+}
+
+@layer components {
+  .surface-panel {
+    background:
+      linear-gradient(180deg, rgba(24, 30, 27, 0.9) 0%, rgba(15, 20, 17, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.045),
+      0 16px 36px rgba(0, 0, 0, 0.16);
+  }
+
+  .surface-panel-soft {
+    background:
+      linear-gradient(180deg, rgba(22, 28, 25, 0.82) 0%, rgba(14, 18, 16, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  .surface-panel-tint {
+    background:
+      radial-gradient(circle at top left, rgba(61, 255, 160, 0.11), transparent 34%),
+      linear-gradient(180deg, rgba(22, 28, 24, 0.94) 0%, rgba(14, 19, 16, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 16px 36px rgba(0, 0, 0, 0.16);
+  }
+
+  .surface-panel-gold {
+    background:
+      radial-gradient(circle at top right, rgba(255, 215, 0, 0.1), transparent 32%),
+      linear-gradient(180deg, rgba(28, 25, 19, 0.94) 0%, rgba(18, 16, 13, 0.98) 100%);
+    border: 1px solid rgba(255, 215, 0, 0.14);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 16px 36px rgba(0, 0, 0, 0.16);
+  }
+
+  .chip-muted {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #aeb8af;
+  }
+
+  .chip-green {
+    background: rgba(61, 255, 160, 0.09);
+    border: 1px solid rgba(61, 255, 160, 0.18);
+    color: #6dffbb;
+  }
+
+  .chip-gold {
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid rgba(255, 215, 0, 0.16);
+    color: #ffd86b;
+  }
+
+  .progress-track {
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  }
 }
 
 * {

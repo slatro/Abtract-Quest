@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { persistBadgeUnlock } from "@/lib/badgeUnlocks";
 
 export async function POST(req: NextRequest) {
   const { wallet } = await req.json();
@@ -53,6 +54,12 @@ export async function POST(req: NextRequest) {
     30: 23,
   };
   const unlockedBadgeId = streakBadges[newStreak] ?? null;
+
+  await persistBadgeUnlock(user.id, 4, "checkin", "quest-daily-checkin");
+
+  if (unlockedBadgeId) {
+    await persistBadgeUnlock(user.id, unlockedBadgeId, "streak", `streak-${newStreak}`);
+  }
 
   return NextResponse.json({
     data: {

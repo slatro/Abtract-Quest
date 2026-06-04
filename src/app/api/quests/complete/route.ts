@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { rateLimit, getIP } from "@/lib/rateLimit";
 import { isBlocked } from "@/lib/checkBlocklist";
+import { persistBadgeUnlock } from "@/lib/badgeUnlocks";
 
 export async function POST(req: NextRequest) {
   const ip = getIP(req);
@@ -57,6 +58,10 @@ export async function POST(req: NextRequest) {
       data: { xp: { increment: quest.xpReward } },
     }),
   ]);
+
+  if (quest.badgeId) {
+    await persistBadgeUnlock(user.id, quest.badgeId, "quest", quest.id);
+  }
 
   return NextResponse.json({
     data: { success: true, xpGained: quest.xpReward, badgeId: quest.badgeId },

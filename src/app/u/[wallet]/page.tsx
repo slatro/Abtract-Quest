@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { BadgeMedallion } from "@/components/badges/BadgeMedallion";
 
 interface Props {
   params: Promise<{ wallet: string }>;
@@ -17,16 +18,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!user) return { title: "User not found" };
 
   return {
-    title: `${wallet.slice(0, 6)}...${wallet.slice(-4)} — Portal Badge Rush`,
+    title: `${wallet.slice(0, 6)}...${wallet.slice(-4)} — Abstract Quests`,
     description: `${user._count.mintRecords} badges collected on Abstract mainnet.`,
     openGraph: {
-      title: `${wallet.slice(0, 6)}...${wallet.slice(-4)} on Portal Badge Rush`,
+      title: `${wallet.slice(0, 6)}...${wallet.slice(-4)} on Abstract Quests`,
       description: `${user._count.mintRecords} badges · ${user.xp} XP · ${user.streak} day streak`,
       images: [`/api/og?wallet=${wallet}`],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${wallet.slice(0, 6)}...${wallet.slice(-4)} on Portal Badge Rush`,
+      title: `${wallet.slice(0, 6)}...${wallet.slice(-4)} on Abstract Quests`,
       description: `${user._count.mintRecords} badges collected on Abstract mainnet.`,
       images: [`/api/og?wallet=${wallet}`],
     },
@@ -63,7 +64,7 @@ export default async function UserProfilePage({ params }: Props) {
 
   const shareUrl = `https://portalbadgerush.xyz/u/${wallet}`;
   const tweetText = encodeURIComponent(
-    `I've collected ${user.mintRecords.length} badges on Portal Badge Rush ⬡\n${shareUrl}`
+    `I've collected ${user.mintRecords.length} badges on Abstract Quests ⬡\n${shareUrl}`
   );
 
   return (
@@ -105,10 +106,10 @@ export default async function UserProfilePage({ params }: Props) {
             {masterBadges.map((r) => (
               <div
                 key={r.id}
-                className="w-20 h-20 rounded-2xl border border-yellow-400/30 bg-yellow-400/5 flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(255,215,0,0.1)]"
+                className="flex h-24 w-24 items-center justify-center rounded-2xl border border-yellow-400/30 bg-yellow-400/5 shadow-[0_0_20px_rgba(255,215,0,0.1)]"
                 title={r.badge.name}
               >
-                {r.badge.emoji}
+                <BadgeMedallion badge={r.badge} size="md" />
               </div>
             ))}
           </div>
@@ -140,7 +141,9 @@ export default async function UserProfilePage({ params }: Props) {
                   className={`rounded-xl border bg-card p-2.5 text-center ${glowStyles[r.badge.rarity] ?? "border-border"}`}
                   title={r.badge.name}
                 >
-                  <div className="text-3xl mb-1.5">{r.badge.emoji}</div>
+                  <div className="mb-2 flex justify-center">
+                    <BadgeMedallion badge={r.badge} size="sm" />
+                  </div>
                   <div className="text-[10px] text-text-2 leading-tight">{r.badge.name}</div>
                 </div>
               );

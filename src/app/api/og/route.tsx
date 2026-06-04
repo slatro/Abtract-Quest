@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
       >
         <div style={{ fontSize: 64, marginBottom: 16 }}>⬡</div>
         <div style={{ color: "#3dffa0", fontSize: 28, fontWeight: 700, marginBottom: 8 }}>
-          Portal Badge Rush
+          Abstract Quests
         </div>
         <div style={{ color: "#e8f0e9", fontSize: 20, marginBottom: 24 }}>{short}</div>
         <div style={{ display: "flex", gap: 32 }}>

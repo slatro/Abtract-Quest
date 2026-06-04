@@ -53,9 +53,12 @@ export default function QuestsPage() {
       if (data.error) {
         setToast(data.error);
       } else {
-        setToast(`✓ Checked in! Streak: ${data.data.streak} days · +${data.data.xpGained} XP`);
+        const unlockNote = data.data.unlockedBadgeId ? ` · Badge #${data.data.unlockedBadgeId} unlocked` : "";
+        setToast(`✓ Checked in! Streak: ${data.data.streak} days · +${data.data.xpGained} XP${unlockNote}`);
         queryClient.invalidateQueries({ queryKey: ["quests", address] });
         queryClient.invalidateQueries({ queryKey: ["user", address] });
+        queryClient.invalidateQueries({ queryKey: ["badges", address] });
+        queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
       }
       setTimeout(() => setToast(null), 4000);
     },
@@ -74,9 +77,12 @@ export default function QuestsPage() {
       if (data.error) {
         setToast(data.error);
       } else {
-        setToast(`✓ Quest complete! +${data.data.xpGained} XP`);
+        const unlockNote = data.data.badgeId ? ` · Badge #${data.data.badgeId} unlocked` : "";
+        setToast(`✓ Quest complete! +${data.data.xpGained} XP${unlockNote}`);
         queryClient.invalidateQueries({ queryKey: ["quests", address] });
         queryClient.invalidateQueries({ queryKey: ["user", address] });
+        queryClient.invalidateQueries({ queryKey: ["badges", address] });
+        queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
       }
       setTimeout(() => setToast(null), 4000);
     },
@@ -87,6 +93,11 @@ export default function QuestsPage() {
     if (tab === "Ecosystem") return q.type === "visit";
     return typeLabels[q.type] === tab;
   });
+
+  const totalQuests = quests.length;
+  const completedQuests = quests.filter((quest: any) => quest.completed).length;
+  const cooldownQuests = quests.filter((quest: any) => quest.onCooldown).length;
+  const unlockingQuests = quests.filter((quest: any) => quest.badgeId).length;
 
   function handleQuestAction(quest: any) {
     if (!address) {
@@ -132,22 +143,36 @@ export default function QuestsPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight mb-1">Quest board</h1>
         <p className="text-sm text-text-2">Complete quests. Unlock badges. Climb the leaderboard.</p>
       </div>
 
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        {[
+          { label: "Visible", value: totalQuests },
+          { label: "Completed", value: completedQuests },
+          { label: "Cooldown", value: cooldownQuests },
+          { label: "Badge quests", value: unlockingQuests },
+        ].map((item) => (
+          <div key={item.label} className="surface-panel rounded-2xl p-4">
+            <div className="text-2xl font-bold text-[#e8f0e9]">{item.value}</div>
+            <div className="text-xs font-semibold text-[#aeb8af] mt-1">{item.label}</div>
+          </div>
+        ))}
+      </div>
+
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 overflow-x-auto pb-1">
+      <div className="flex gap-1 mb-6 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {TABS.map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap border transition-colors ${
               tab === t
-                ? "text-green bg-green/10 border-green/20"
-                : "text-text-2 bg-transparent border-transparent hover:bg-card"
+                ? "chip-green"
+                : "text-text-2 bg-transparent border-transparent hover:bg-white/5"
             }`}
           >
             {t}
@@ -163,10 +188,10 @@ export default function QuestsPage() {
           {filtered.map((quest: any) => (
             <div
               key={quest.id}
-              className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:border-border-2 transition-all cursor-pointer"
+              className="surface-panel flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl hover:border-white/10 transition-all cursor-pointer"
               onClick={() => handleQuestAction(quest)}
             >
-              <div className="w-10 h-10 rounded-xl bg-bg2 border border-border flex items-center justify-center text-lg flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl surface-panel-soft flex items-center justify-center text-lg shrink-0">
                 {typeIcons[quest.type] ?? "⚡"}
               </div>
 
@@ -174,21 +199,21 @@ export default function QuestsPage() {
                 <div className="text-sm font-semibold mb-0.5">{quest.title}</div>
                 <div className="text-xs text-text-2 leading-relaxed">{quest.description}</div>
                 <div className="flex gap-2 mt-1.5 flex-wrap">
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-bg2 border border-border text-text-2">
+                  <span className="text-[10px] px-2 py-0.5 rounded chip-muted">
                     {typeLabels[quest.type] ?? quest.type}
                   </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-green/8 border border-green/15 text-green">
+                  <span className="text-[10px] px-2 py-0.5 rounded chip-green">
                     +{quest.xpReward} XP
                   </span>
                   {quest.badgeId && (
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-purple-400/8 border border-purple-400/15 text-purple-400">
+                    <span className="text-[10px] px-2 py-0.5 rounded border border-purple-300/15 bg-purple-300/10 text-purple-200">
                       Unlocks badge
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="flex-shrink-0">
+              <div className="sm:shrink-0 self-start sm:self-auto">
                 <span className={`text-xs font-semibold px-3 py-1.5 rounded-lg ${getStatusStyle(quest)}`}>
                   {getStatusLabel(quest)}
                 </span>
@@ -204,7 +229,7 @@ export default function QuestsPage() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 bg-card border border-border-2 rounded-xl px-4 py-3 text-sm font-medium shadow-xl z-50 max-w-xs">
+        <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-xs bg-card border border-border-2 rounded-xl px-4 py-3 text-sm font-medium shadow-xl z-50">
           {toast}
         </div>
       )}
