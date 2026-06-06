@@ -181,7 +181,7 @@ export default function DashboardPage() {
             >
               {user?.avatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={`/avatars/${user.avatar}.png`} alt="avatar" className="w-full h-full object-cover rounded-xl" />
+                <img src={`/avatars/${user.avatar.replace("_penguin", "")}.png`} alt="avatar" className="w-full h-full object-cover rounded-xl" />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src="/avatars/ninja.png" alt="default avatar" className="w-full h-full object-cover rounded-xl opacity-80" />

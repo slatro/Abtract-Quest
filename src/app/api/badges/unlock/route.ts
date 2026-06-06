@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "wallet and badgeId required" }, { status: 400 });
   }
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === "production" && process.env.TURNSTILE_SECRET_KEY) {
     if (!turnstileToken) {
       return NextResponse.json({ error: "Captcha required" }, { status: 400 });
     }

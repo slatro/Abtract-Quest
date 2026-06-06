@@ -92,6 +92,10 @@ export default function QuestsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ wallet: address }),
       });
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || "Check-in request failed");
+      }
       return res.json();
     },
     onSuccess: (data) => {
@@ -122,6 +126,10 @@ export default function QuestsPage() {
       }
       setTimeout(() => setToast(null), 4000);
     },
+    onError: (err: any) => {
+      setToast(err.message || "Error: Check-in failed. Please try again.");
+      setTimeout(() => setToast(null), 4000);
+    }
   });
 
   const completeQuestMutation = useMutation({
@@ -131,6 +139,10 @@ export default function QuestsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ wallet: address, questId }),
       });
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || "Quest completion failed");
+      }
       return res.json();
     },
     onSuccess: (data) => {
@@ -161,6 +173,10 @@ export default function QuestsPage() {
       }
       setTimeout(() => setToast(null), 4000);
     },
+    onError: (err: any) => {
+      setToast(err.message || "Error: Failed to complete quest. Please try again.");
+      setTimeout(() => setToast(null), 4000);
+    }
   });
 
   const filtered = quests.filter((q: any) => {

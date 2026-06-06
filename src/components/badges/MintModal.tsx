@@ -264,9 +264,9 @@ export function MintModal({ badge, onClose }: Props) {
               </button>
             ) : (
               <>
-                {!turnstileToken && (
+                {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken && (
                   <Turnstile
-                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
                     onSuccess={setTurnstileToken}
                     className="mb-3 flex justify-center"
                   />

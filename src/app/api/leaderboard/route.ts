@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
           wallet: u.wallet,
           xp: u.xp,
           streak: u.streak,
-          avatar: u.avatar || null,
+          avatar: u.avatar ? u.avatar.replace("_penguin", "") : null,
           badgeCount: u._count.mintRecords,
           masterCount,
         };

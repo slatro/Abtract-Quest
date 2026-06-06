@@ -124,7 +124,7 @@ export default async function UserProfilePage({ params }: Props) {
               <div className="w-24 h-24 rounded-2xl border-2 border-white/10 flex items-center justify-center overflow-hidden bg-black/60 relative z-10 p-1">
                 {user.avatar ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={`/avatars/${user.avatar}.png`} alt="avatar" className="w-full h-full object-cover rounded-xl" />
+                  <img src={`/avatars/${user.avatar.replace("_penguin", "")}.png`} alt="avatar" className="w-full h-full object-cover rounded-xl" />
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src="/avatars/ninja.png" alt="default avatar" className="w-full h-full object-cover rounded-xl opacity-80" />

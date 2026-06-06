@@ -52,6 +52,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     data: {
       ...user,
+      avatar: user.avatar ? user.avatar.replace("_penguin", "") : null,
       ownedBadgeIds: user.mintRecords.map((r: any) => r.badgeId),
       unlockedBadgeIds: user.badgeUnlocks.map((r: any) => r.badgeId),
     },
