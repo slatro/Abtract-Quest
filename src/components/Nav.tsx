@@ -104,18 +104,13 @@ export function Nav() {
         <div className="flex items-center justify-between h-16 mt-2">
           <Link href="/" prefetch={false} className="flex items-center gap-3.5 font-bold text-sm text-[#e8f0e9] shrink min-w-0 group translate-y-5 -translate-x-4">
             <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform duration-700 ease-out group-hover:rotate-90 group-hover:scale-110">
-              <path d="M20 4L34 12V28L20 36L6 28V12L20 4Z" stroke="url(#logo-grad-1)" strokeWidth="2.5" strokeLinejoin="round"/>
-              <path d="M20 12L27 16V24L20 28L13 24V16L20 12Z" fill="url(#logo-grad-2)"/>
-              <circle cx="20" cy="20" r="2" fill="#fff" className="animate-pulse" />
+              <path d="M20 4L34 12V28L20 36L6 28V12L20 4Z" stroke="url(#logo-grad-1)" strokeWidth="2.5" strokeLinejoin="round" fill="none"/>
+              <path d="M20 12L27 16V24L20 28L13 24V16L20 12Z" stroke="url(#logo-grad-1)" strokeWidth="1.8" strokeLinejoin="round" fill="none"/>
               <defs>
                 <linearGradient id="logo-grad-1" x1="6" y1="4" x2="34" y2="36" gradientUnits="userSpaceOnUse">
                   <stop stopColor="#00ffff"/>
                   <stop offset="0.5" stopColor="#a855f7"/>
                   <stop offset="1" stopColor="#00ff66"/>
-                </linearGradient>
-                <linearGradient id="logo-grad-2" x1="13" y1="12" x2="27" y2="28" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#eab308" stopOpacity="0.8"/>
-                  <stop offset="1" stopColor="#f59e0b" stopOpacity="0.1"/>
                 </linearGradient>
               </defs>
             </svg>
