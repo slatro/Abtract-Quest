@@ -44,24 +44,32 @@ const quickLinks = [
     label: "Badge Gallery",
     copy: "Browse the full collection, sort by rarity, and mint unlocked badges.",
     icon: LayoutGrid,
+    glow: "hover:border-[#b47aff]/30 hover:bg-[#b47aff]/[0.02] shadow-[0_0_20px_rgba(180,122,255,0.03)]",
+    iconColor: "text-[#b47aff] border-[#b47aff]/20 bg-[#b47aff]/10",
   },
   {
     href: "/quests",
     label: "Quest Board",
     copy: "Knock out dailies, ecosystem visits, quizzes, and streak milestones.",
     icon: Swords,
+    glow: "hover:border-green/30 hover:bg-green/[0.02] shadow-[0_0_20px_rgba(61,255,160,0.03)]",
+    iconColor: "text-green border-green/20 bg-green/10",
   },
   {
     href: "/leaderboard",
     label: "Leaderboard",
     copy: "Track the collectors climbing by XP, streaks, and master crests.",
     icon: Trophy,
+    glow: "hover:border-[#ffd700]/30 hover:bg-[#ffd700]/[0.02] shadow-[0_0_20px_rgba(255,215,0,0.03)]",
+    iconColor: "text-[#ffd700] border-[#ffd700]/20 bg-[#ffd700]/10",
   },
   {
     href: "/ecosystem",
     label: "Ecosystem",
     copy: "Jump into Abstract apps and route quest traffic through live projects.",
     icon: Compass,
+    glow: "hover:border-[#60c8ff]/30 hover:bg-[#60c8ff]/[0.02] shadow-[0_0_20px_rgba(96,200,255,0.03)]",
+    iconColor: "text-[#60c8ff] border-[#60c8ff]/20 bg-[#60c8ff]/10",
   },
 ];
 
@@ -252,33 +260,34 @@ export default function Home() {
           <Link
             key={item.href}
             href={item.href}
-            className="group rounded-md border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-border-2"
+            className={`group rounded-xl border border-white/5 bg-white/[0.02] backdrop-blur-xl p-5 transition-all duration-300 hover:-translate-y-1 ${item.glow}`}
           >
-            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-md border border-border-2 bg-bg-2 text-green">
+            <div className={`mb-3 flex h-11 w-11 items-center justify-center rounded-lg border transition-all duration-300 ${item.iconColor}`}>
               <item.icon className="h-5 w-5" />
             </div>
-            <h3 className="text-lg font-bold text-[#e8f0e9] transition-colors group-hover:text-green">
+            <h3 className="text-lg font-bold text-white transition-colors group-hover:text-white">
               {item.label}
             </h3>
-            <p className="mt-2 text-sm leading-6 text-[#aeb8af]">{item.copy}</p>
-            <div className="mt-4 inline-flex items-center text-sm font-semibold text-green">
+            <p className="mt-2 text-sm leading-relaxed text-[#aeb8af] min-h-[48px]">{item.copy}</p>
+            <div className="mt-4 inline-flex items-center text-sm font-bold text-white/50 group-hover:text-white transition-colors">
               Open
-              <ArrowRight className="ml-1.5 h-4 w-4" />
+              <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </div>
           </Link>
         ))}
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="rounded-md border border-border bg-card p-6">
-          <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890]">
+        <div className="rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl p-6 shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-32 h-32 bg-green-500/5 rounded-full blur-2xl pointer-events-none" />
+          <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890] mb-1">
             Flow
           </p>
-          <h2 className="mt-2 text-2xl font-bold text-[#e8f0e9]">
+          <h2 className="text-2xl font-bold text-white mb-6">
             The loop is simple and addictive.
           </h2>
 
-          <div className="mt-6 space-y-4">
+          <div className="space-y-3.5">
             {[
               "Complete a quest or quiz.",
               "Unlock the matching badge.",
@@ -287,51 +296,56 @@ export default function Home() {
             ].map((step, index) => (
               <div
                 key={step}
-                className="flex items-center gap-4 rounded-md border border-border bg-bg-2 p-4"
+                className="flex items-center gap-4 rounded-xl border border-white/[0.04] bg-white/[0.01] p-4 transition-all duration-300 hover:bg-white/[0.03] hover:border-white/[0.08]"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green/10 text-sm font-bold text-green">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#3dffa0] to-[#00ffff] text-[#080c0a] text-sm font-black shadow-[0_0_12px_rgba(61,255,160,0.3)] shrink-0">
                   {index + 1}
                 </div>
-                <p className="text-sm text-[#dce6dd]">{step}</p>
+                <p className="text-sm font-medium text-white/80">{step}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-md border border-border bg-[linear-gradient(180deg,#131a14_0%,#0d1410_100%)] p-6">
-          <div className="flex items-start justify-between gap-4">
+        <div className="rounded-2xl border border-white/5 bg-gradient-to-b from-white/[0.04] to-transparent backdrop-blur-xl p-6 shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex items-start justify-between gap-4 mb-6">
             <div>
-              <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890]">
+              <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890] mb-1">
                 Best Next Step
               </p>
-              <h2 className="mt-2 text-2xl font-bold text-[#e8f0e9]">
+              <h2 className="text-2xl font-bold text-white">
                 Open quests first, then mint from the gallery.
               </h2>
             </div>
-            <div className="rounded-md border border-green/20 bg-green/10 px-3 py-1.5 text-xs font-semibold text-green">
+            <div className="rounded-full border border-green/30 bg-green/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-green shadow-[0_0_10px_rgba(61,255,160,0.1)] shrink-0">
               Recommended
             </div>
           </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3.5 sm:grid-cols-2">
             <Link
               href="/quests"
-              className="rounded-md border border-green/20 bg-green/10 p-5 transition-colors hover:bg-green/15"
+              className="group rounded-xl border border-green/20 bg-green/5 p-5 transition-all duration-300 hover:bg-green/10 hover:border-green/45 shadow-[0_0_15px_rgba(61,255,160,0.02)]"
             >
-              <div className="text-sm font-semibold text-green">Quest Board</div>
-              <p className="mt-2 text-sm leading-6 text-[#d7e4d8]">
+              <div className="text-sm font-bold text-green flex items-center gap-1.5 transition-colors group-hover:text-[#58ffb0]">
+                Quest Board
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-white/70">
                 Daily check-ins, visit quests, quiz runs, and streak progress
                 all start here.
               </p>
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-md border border-border bg-bg-2 p-5 transition-colors hover:border-border-2"
+              className="group rounded-xl border border-white/5 bg-white/[0.01] p-5 transition-all duration-300 hover:bg-white/[0.03] hover:border-white/[0.12]"
             >
-              <div className="text-sm font-semibold text-[#e8f0e9]">
+              <div className="text-sm font-bold text-white flex items-center gap-1.5 transition-colors group-hover:text-green">
                 Collector Dashboard
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
               </div>
-              <p className="mt-2 text-sm leading-6 text-[#aeb8af]">
+              <p className="mt-2 text-xs leading-relaxed text-[#aeb8af]">
                 Once connected, this becomes the fastest way to see unlocked
                 mints and progress.
               </p>
@@ -345,16 +359,16 @@ export default function Home() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="flex items-start gap-4 rounded-md border border-border bg-black/10 p-4 transition-colors hover:border-border-2"
+                  className="group flex items-start gap-4 rounded-xl border border-white/[0.04] bg-white/[0.01] p-4 transition-all duration-300 hover:border-white/[0.1] hover:bg-white/[0.03]"
                 >
-                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border-2 bg-bg-2">
+                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/5 bg-white/[0.02] transition-all duration-300 group-hover:scale-105">
                     <Icon className={`h-4 w-4 ${item.accent}`} />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-sm font-semibold text-[#e8f0e9]">
+                    <div className="text-sm font-bold text-white transition-colors group-hover:text-green">
                       {item.label}
                     </div>
-                    <p className="mt-1 text-sm leading-6 text-[#aeb8af]">
+                    <p className="mt-1 text-xs leading-relaxed text-[#aeb8af]">
                       {item.copy}
                     </p>
                   </div>

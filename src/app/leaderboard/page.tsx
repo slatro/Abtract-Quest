@@ -177,12 +177,12 @@ export default function LeaderboardPage() {
 
                 {/* Avatar / Initials */}
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center text-2xl shrink-0 shadow-inner border border-white/5 group-hover:scale-110 transition-transform duration-300 overflow-hidden">
-                  {user.avatar ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={`/avatars/${user.avatar}.png`} alt="avatar" className="w-full h-full object-cover" />
-                  ) : (
-                    ["🦅", "👺", "🦊", "🔬", "🔥", "🎓", "🛋️", "🏗️"][user.rank % 8]
-                  )}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/avatars/${user.avatar || ["ninja", "king", "samurai", "doctor", "astronaut", "cyberpunk", "wizard", "pirate", "chef", "detective", "pilot", "explorer"][(user.rank - 1) % 12]}.png`}
+                    alt="avatar"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
 
                 {/* User Info */}
