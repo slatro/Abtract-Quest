@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BadgeMedallion } from "@/components/badges/BadgeMedallion";
+import { PenguinIcon, PenguinVariant } from "@/components/ui/PenguinIcon";
 import {
   ArrowRight,
   BadgeCheck,
@@ -43,33 +44,37 @@ const quickLinks = [
     href: "/gallery",
     label: "Badge Gallery",
     copy: "Browse the full collection, sort by rarity, and mint unlocked badges.",
-    icon: LayoutGrid,
-    glow: "hover:border-[#b47aff]/30 hover:bg-[#b47aff]/[0.02] shadow-[0_0_20px_rgba(180,122,255,0.03)]",
-    iconColor: "text-[#b47aff] border-[#b47aff]/20 bg-[#b47aff]/10",
+    variant: "badge" as PenguinVariant,
+    bgClass: "bg-[radial-gradient(circle_at_top_left,rgba(180,122,255,0.04),transparent_60%),linear-gradient(180deg,#0d1410_0%,#080c0a_100%)] border-[#b47aff]/10 hover:border-[#b47aff]/30 shadow-[0_0_15px_rgba(180,122,255,0.02)]",
+    hoverText: "group-hover:text-[#b47aff]",
+    iconColor: "text-[#b47aff] border-[#b47aff]/10 bg-[#b47aff]/5",
   },
   {
     href: "/quests",
     label: "Quest Board",
     copy: "Knock out dailies, ecosystem visits, quizzes, and streak milestones.",
-    icon: Swords,
-    glow: "hover:border-green/30 hover:bg-green/[0.02] shadow-[0_0_20px_rgba(61,255,160,0.03)]",
-    iconColor: "text-green border-green/20 bg-green/10",
+    variant: "base" as PenguinVariant,
+    bgClass: "bg-[radial-gradient(circle_at_top_left,rgba(61,255,160,0.04),transparent_60%),linear-gradient(180deg,#0d1410_0%,#080c0a_100%)] border-green/10 hover:border-green/30 shadow-[0_0_15px_rgba(61,255,160,0.02)]",
+    hoverText: "group-hover:text-green",
+    iconColor: "text-green border-green/10 bg-green/5",
   },
   {
     href: "/leaderboard",
     label: "Leaderboard",
     copy: "Track the collectors climbing by XP, streaks, and master crests.",
-    icon: Trophy,
-    glow: "hover:border-[#ffd700]/30 hover:bg-[#ffd700]/[0.02] shadow-[0_0_20px_rgba(255,215,0,0.03)]",
-    iconColor: "text-[#ffd700] border-[#ffd700]/20 bg-[#ffd700]/10",
+    variant: "streak" as PenguinVariant,
+    bgClass: "bg-[radial-gradient(circle_at_top_left,rgba(255,215,0,0.03),transparent_60%),linear-gradient(180deg,#0d1410_0%,#080c0a_100%)] border-[#ffd700]/10 hover:border-[#ffd700]/25 shadow-[0_0_15px_rgba(255,215,0,0.02)]",
+    hoverText: "group-hover:text-[#ffd700]",
+    iconColor: "text-[#ffd700] border-[#ffd700]/10 bg-[#ffd700]/5",
   },
   {
     href: "/ecosystem",
     label: "Ecosystem",
     copy: "Jump into Abstract apps and route quest traffic through live projects.",
-    icon: Compass,
-    glow: "hover:border-[#60c8ff]/30 hover:bg-[#60c8ff]/[0.02] shadow-[0_0_20px_rgba(96,200,255,0.03)]",
-    iconColor: "text-[#60c8ff] border-[#60c8ff]/20 bg-[#60c8ff]/10",
+    variant: "visit" as PenguinVariant,
+    bgClass: "bg-[radial-gradient(circle_at_top_left,rgba(96,200,255,0.04),transparent_60%),linear-gradient(180deg,#0d1410_0%,#080c0a_100%)] border-[#60c8ff]/10 hover:border-[#60c8ff]/30 shadow-[0_0_15px_rgba(96,200,255,0.02)]",
+    hoverText: "group-hover:text-[#60c8ff]",
+    iconColor: "text-[#60c8ff] border-[#60c8ff]/10 bg-[#60c8ff]/5",
   },
 ];
 
@@ -78,16 +83,25 @@ const valueProps = [
     title: "Quest-first loop",
     copy: "Quests, unlocks, mints, and leaderboard movement all feed the same progression loop.",
     icon: Sparkles,
+    border: "border-green/15 bg-green/[0.02] shadow-[inset_0_1px_0_rgba(61,255,160,0.05)]",
+    hover: "hover:border-green/35 hover:bg-green/[0.06] hover:shadow-[inset_0_1px_0_rgba(61,255,160,0.08),0_10px_20px_rgba(0,0,0,0.2)]",
+    iconStyle: "border-green/20 bg-green/10 text-green",
   },
   {
     title: "Public collector identity",
     copy: "Every badge you mint adds to a clean public wall you can actually share without apologizing for it.",
     icon: BadgeCheck,
+    border: "border-[#60c8ff]/15 bg-[#60c8ff]/[0.02] shadow-[inset_0_1px_0_rgba(96,200,255,0.05)]",
+    hover: "hover:border-[#60c8ff]/35 hover:bg-[#60c8ff]/0.06 hover:shadow-[inset_0_1px_0_rgba(96,200,255,0.08),0_10px_20px_rgba(0,0,0,0.2)]",
+    iconStyle: "border-[#60c8ff]/20 bg-[#60c8ff]/10 text-[#60c8ff]",
   },
   {
     title: "Built around Abstract",
     copy: "The whole product is tuned for chain-native activity instead of bolting badges onto a generic app shell.",
     icon: Blocks,
+    border: "border-[#b47aff]/15 bg-[#b47aff]/[0.02] shadow-[inset_0_1px_0_rgba(180,122,255,0.05)]",
+    hover: "hover:border-[#b47aff]/35 hover:bg-[#b47aff]/0.06 hover:shadow-[inset_0_1px_0_rgba(180,122,255,0.08),0_10px_20px_rgba(0,0,0,0.2)]",
+    iconStyle: "border-[#b47aff]/20 bg-[#b47aff]/10 text-[#b47aff]",
   },
 ];
 
@@ -96,29 +110,41 @@ const liveSurfaces = [
     label: "Quests",
     copy: "Daily check-ins, ecosystem visits, streaks, and quizzes.",
     href: "/quests",
-    icon: Swords,
-    accent: "text-green",
+    variant: "base" as PenguinVariant,
+    border: "border-green/15 bg-green/[0.02] shadow-[inset_0_1px_0_rgba(61,255,160,0.05)]",
+    hover: "hover:border-green/35 hover:bg-green/[0.06]",
+    iconStyle: "border-green/20 bg-green/10 text-green",
+    hoverText: "group-hover:text-green",
   },
   {
     label: "Gallery",
     copy: "Mint-ready collection sorted by rarity and set progress.",
     href: "/gallery",
-    icon: LayoutGrid,
-    accent: "text-[#60c8ff]",
+    variant: "badge" as PenguinVariant,
+    border: "border-[#60c8ff]/15 bg-[#60c8ff]/[0.02] shadow-[inset_0_1px_0_rgba(96,200,255,0.05)]",
+    hover: "hover:border-[#60c8ff]/35 hover:bg-[#60c8ff]/0.06",
+    iconStyle: "border-[#60c8ff]/20 bg-[#60c8ff]/10 text-[#60c8ff]",
+    hoverText: "group-hover:text-[#60c8ff]",
   },
   {
     label: "Ecosystem",
     copy: "Project discovery surface with referral-aware outbound routing.",
     href: "/ecosystem",
-    icon: Globe,
-    accent: "text-[#b47aff]",
+    variant: "visit" as PenguinVariant,
+    border: "border-[#b47aff]/15 bg-[#b47aff]/[0.02] shadow-[inset_0_1px_0_rgba(180,122,255,0.05)]",
+    hover: "hover:border-[#b47aff]/35 hover:bg-[#b47aff]/0.06",
+    iconStyle: "border-[#b47aff]/20 bg-[#b47aff]/10 text-[#b47aff]",
+    hoverText: "group-hover:text-[#b47aff]",
   },
   {
     label: "Leaderboard",
     copy: "XP, streak, badge, and crest race in one place.",
     href: "/leaderboard",
-    icon: Flame,
-    accent: "text-[#ffd700]",
+    variant: "streak" as PenguinVariant,
+    border: "border-[#ffd700]/15 bg-[#ffd700]/[0.02] shadow-[inset_0_1px_0_rgba(255,215,0,0.05)]",
+    hover: "hover:border-[#ffd700]/35 hover:bg-[#ffd700]/0.06",
+    iconStyle: "border-[#ffd700]/20 bg-[#ffd700]/10 text-[#ffd700]",
+    hoverText: "group-hover:text-[#ffd700]",
   },
 ];
 
@@ -126,7 +152,7 @@ export default function Home() {
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8">
       <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="rounded-md border border-border bg-[radial-gradient(circle_at_top_left,rgba(61,255,160,0.12),transparent_35%),linear-gradient(180deg,#101813_0%,#0a100d_100%)] p-8">
+        <div className="rounded-md border border-border/80 bg-[radial-gradient(circle_at_top_left,rgba(61,255,160,0.04),transparent_55%),linear-gradient(180deg,#0d1410_0%,#080c0a_100%)] p-8">
           <div className="mb-6 inline-flex items-center gap-2 rounded-sm border border-green/20 bg-green/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-green">
             Abstract Mainnet
           </div>
@@ -160,13 +186,13 @@ export default function Home() {
 
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
             {[
-              { value: "42", label: "Launch badges" },
-              { value: "13", label: "Live quests" },
-              { value: "11124", label: "Chain ID" },
+              { value: "42", label: "Launch badges", border: "border-green/15 bg-green/[0.02] shadow-[inset_0_1px_0_rgba(61,255,160,0.05)]", hover: "hover:border-green/35 hover:bg-green/[0.06]" },
+              { value: "13", label: "Live quests", border: "border-[#b47aff]/15 bg-[#b47aff]/[0.02] shadow-[inset_0_1px_0_rgba(180,122,255,0.05)]", hover: "hover:border-[#b47aff]/35 hover:bg-[#b47aff]/[0.06]" },
+              { value: "11124", label: "Chain ID", border: "border-[#ffd700]/15 bg-[#ffd700]/[0.02] shadow-[inset_0_1px_0_rgba(255,215,0,0.05)]", hover: "hover:border-[#ffd700]/35 hover:bg-[#ffd700]/[0.06]" },
             ].map((item) => (
               <div
                 key={item.label}
-                className="rounded-md border border-border bg-black/10 p-4"
+                className={`rounded-md border p-4 transition-all duration-300 ${item.border} ${item.hover}`}
               >
                 <div className="text-2xl font-bold text-[#e8f0e9]">
                   {item.value}
@@ -182,10 +208,10 @@ export default function Home() {
               return (
                 <div
                   key={item.title}
-                  className="rounded-md border border-border bg-black/10 p-4"
+                  className={`rounded-md border p-4 transition-all duration-300 ${item.border} ${item.hover}`}
                 >
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md border border-green/20 bg-green/10">
-                    <Icon className="h-4 w-4 text-green" />
+                  <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-md border ${item.iconStyle}`}>
+                    <Icon className="h-4 w-4" />
                   </div>
                   <div className="text-sm font-semibold text-[#e8f0e9]">
                     {item.title}
@@ -199,13 +225,13 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="rounded-md border border-border bg-card p-6">
-          <div className="mb-5 flex items-center justify-between">
+        <div className="rounded-md border border-border/80 bg-[radial-gradient(circle_at_top_right,rgba(61,255,160,0.04),transparent_55%),linear-gradient(180deg,#0d1410_0%,#080c0a_100%)] p-8 shadow-xl relative overflow-hidden group">
+          <div className="mb-5 flex items-center justify-between relative z-10">
             <div>
-              <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890]">
+              <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890] mb-1">
                 Featured Badges
               </p>
-              <h2 className="mt-1 text-xl font-bold text-[#e8f0e9]">
+              <h2 className="text-xl font-bold text-white">
                 Rarity-first collection
               </h2>
             </div>
@@ -217,40 +243,65 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid gap-4">
-            {featuredBadges.map((badge) => (
-              <div
-                key={badge.name}
-                className={`rounded-md border border-border bg-[linear-gradient(180deg,#171f18_0%,#101512_100%)] p-4 ${badge.glow}`}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-md border border-border-2 bg-[#0d1410]">
-                      <BadgeMedallion
-                        badge={{
-                          id: badge.id,
-                          name: badge.name,
-                          rarity: badge.rarity,
-                          isMaster: badge.isMaster,
-                        }}
-                        size="sm"
-                      />
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-[#e8f0e9]">
-                        {badge.name}
+          <div className="grid gap-4 relative z-10">
+            {featuredBadges.map((badge) => {
+              const rarityStyles: Record<string, { base: string; hover: string; badgeBg: string; textClass: string }> = {
+                common: {
+                  base: "bg-green/[0.02] border-green/15 shadow-[inset_0_1px_0_rgba(61,255,160,0.05)]",
+                  hover: "hover:bg-green/[0.06] hover:border-green/35 hover:shadow-[inset_0_1px_0_rgba(61,255,160,0.08),0_0_20px_rgba(61,255,160,0.05)]",
+                  badgeBg: "border-green/20 bg-green/10",
+                  textClass: "text-green",
+                },
+                rare: {
+                  base: "bg-[#60c8ff]/[0.02] border-[#60c8ff]/15 shadow-[inset_0_1px_0_rgba(96,200,255,0.05)]",
+                  hover: "hover:bg-[#60c8ff]/[0.06] hover:border-[#60c8ff]/35 hover:shadow-[inset_0_1px_0_rgba(96,200,255,0.08),0_0_20px_rgba(96,200,255,0.05)]",
+                  badgeBg: "border-[#60c8ff]/20 bg-[#60c8ff]/10",
+                  textClass: "text-[#60c8ff]",
+                },
+                legendary: {
+                  base: "bg-[#ffd700]/[0.02] border-[#ffd700]/15 shadow-[inset_0_1px_0_rgba(255,215,0,0.05)]",
+                  hover: "hover:bg-[#ffd700]/[0.06] hover:border-[#ffd700]/35 hover:shadow-[inset_0_1px_0_rgba(255,215,0,0.08),0_0_25px_rgba(255,215,0,0.06)]",
+                  badgeBg: "border-[#ffd700]/20 bg-[#ffd700]/10",
+                  textClass: "text-[#ffd700]",
+                },
+              };
+
+              const style = rarityStyles[badge.rarity] || rarityStyles.common;
+
+              return (
+                <div
+                  key={badge.name}
+                  className={`group/badge rounded-xl border p-4 transition-all duration-300 ${style.base} ${style.hover}`}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className={`flex h-16 w-16 items-center justify-center rounded-xl border shadow-inner group-hover/badge:scale-105 transition-transform duration-300 shrink-0 ${style.badgeBg}`}>
+                        <BadgeMedallion
+                          badge={{
+                            id: badge.id,
+                            name: badge.name,
+                            rarity: badge.rarity,
+                            isMaster: badge.isMaster,
+                          }}
+                          size="sm"
+                        />
                       </div>
-                      <div className={`mt-1 text-xs font-semibold ${badge.accent}`}>
-                        {badge.rarity.toUpperCase()}
+                      <div>
+                        <div className="text-sm font-bold text-white transition-colors group-hover/badge:text-green">
+                          {badge.name}
+                        </div>
+                        <div className={`mt-1.5 text-[10px] font-extrabold uppercase tracking-widest ${style.textClass}`}>
+                          {badge.rarity}
+                        </div>
                       </div>
                     </div>
+                    <span className={`rounded-full border px-2.5 py-1 text-[9px] font-mono tracking-wider uppercase ${badge.rarity === 'common' ? 'border-green/25 bg-green/5 text-green/50' : badge.rarity === 'rare' ? 'border-[#60c8ff]/25 bg-[#60c8ff]/5 text-[#60c8ff]/50' : 'border-[#ffd700]/25 bg-[#ffd700]/5 text-[#ffd700]/50'}`}>
+                      ERC-1155
+                    </span>
                   </div>
-                  <span className="rounded-sm border border-border bg-bg-2 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.16em] text-[#8fa890]">
-                    ERC-1155
-                  </span>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -260,16 +311,16 @@ export default function Home() {
           <Link
             key={item.href}
             href={item.href}
-            className={`group rounded-xl border border-white/5 bg-white/[0.02] backdrop-blur-xl p-5 transition-all duration-300 hover:-translate-y-1 ${item.glow}`}
+            className={`group rounded-md border p-5 transition-all duration-300 hover:-translate-y-1 ${item.bgClass}`}
           >
             <div className={`mb-3 flex h-11 w-11 items-center justify-center rounded-lg border transition-all duration-300 ${item.iconColor}`}>
-              <item.icon className="h-5 w-5" />
+              <PenguinIcon variant={item.variant} className="h-5.5 w-5.5" />
             </div>
-            <h3 className="text-lg font-bold text-white transition-colors group-hover:text-white">
+            <h3 className={`text-lg font-bold text-white transition-colors ${item.hoverText}`}>
               {item.label}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-[#aeb8af] min-h-[48px]">{item.copy}</p>
-            <div className="mt-4 inline-flex items-center text-sm font-bold text-white/50 group-hover:text-white transition-colors">
+            <div className={`mt-4 inline-flex items-center text-sm font-bold text-white/50 transition-colors ${item.hoverText}`}>
               Open
               <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </div>
@@ -278,8 +329,7 @@ export default function Home() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl p-6 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-32 h-32 bg-green-500/5 rounded-full blur-2xl pointer-events-none" />
+        <div className="rounded-md border border-border/80 bg-[radial-gradient(circle_at_top_left,rgba(61,255,160,0.04),transparent_55%),linear-gradient(180deg,#0d1410_0%,#080c0a_100%)] p-8 shadow-xl relative overflow-hidden">
           <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890] mb-1">
             Flow
           </p>
@@ -289,26 +339,25 @@ export default function Home() {
 
           <div className="space-y-3.5">
             {[
-              "Complete a quest or quiz.",
-              "Unlock the matching badge.",
-              "Mint it on Abstract and gain XP.",
-              "Climb the leaderboard and fill your public wall.",
+              { text: "Complete a quest or quiz.", style: "bg-green/[0.02] border-green/15 hover:border-green/35 hover:bg-green/[0.06] shadow-[inset_0_1px_0_rgba(61,255,160,0.05)]", circle: "from-[#3dffa0] to-[#00ffff] shadow-[0_0_12px_rgba(61,255,160,0.25)]" },
+              { text: "Unlock the matching badge.", style: "bg-[#60c8ff]/[0.02] border-[#60c8ff]/15 hover:border-[#60c8ff]/35 hover:bg-[#60c8ff]/0.06 shadow-[inset_0_1px_0_rgba(96,200,255,0.05)]", circle: "from-[#60c8ff] to-[#00abff] shadow-[0_0_12px_rgba(96,200,255,0.25)]" },
+              { text: "Mint it on Abstract and gain XP.", style: "bg-[#b47aff]/[0.02] border-[#b47aff]/15 hover:border-[#b47aff]/35 hover:bg-[#b47aff]/0.06 shadow-[inset_0_1px_0_rgba(180,122,255,0.05)]", circle: "from-[#b47aff] to-[#a855f7] shadow-[0_0_12px_rgba(180,122,255,0.25)]" },
+              { text: "Climb the leaderboard and fill your public wall.", style: "bg-[#ffd700]/[0.02] border-[#ffd700]/15 hover:border-[#ffd700]/35 hover:bg-[#ffd700]/0.06 shadow-[inset_0_1px_0_rgba(255,215,0,0.05)]", circle: "from-[#ffd700] to-[#f59e0b] shadow-[0_0_12px_rgba(255,215,0,0.25)]" },
             ].map((step, index) => (
               <div
-                key={step}
-                className="flex items-center gap-4 rounded-xl border border-white/[0.04] bg-white/[0.01] p-4 transition-all duration-300 hover:bg-white/[0.03] hover:border-white/[0.08]"
+                key={step.text}
+                className={`flex items-center gap-4 rounded-xl border p-4 transition-all duration-300 ${step.style}`}
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#3dffa0] to-[#00ffff] text-[#080c0a] text-sm font-black shadow-[0_0_12px_rgba(61,255,160,0.3)] shrink-0">
+                <div className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br text-[#080c0a] text-sm font-black shrink-0 ${step.circle}`}>
                   {index + 1}
                 </div>
-                <p className="text-sm font-medium text-white/80">{step}</p>
+                <p className="text-sm font-medium text-white/80">{step.text}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/5 bg-gradient-to-b from-white/[0.04] to-transparent backdrop-blur-xl p-6 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none" />
+        <div className="rounded-md border border-border/80 bg-[radial-gradient(circle_at_top_right,rgba(96,200,255,0.04),transparent_55%),linear-gradient(180deg,#0d1410_0%,#080c0a_100%)] p-8 shadow-xl relative overflow-hidden">
           <div className="flex items-start justify-between gap-4 mb-6">
             <div>
               <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890] mb-1">
@@ -326,7 +375,7 @@ export default function Home() {
           <div className="grid gap-3.5 sm:grid-cols-2">
             <Link
               href="/quests"
-              className="group rounded-xl border border-green/20 bg-green/5 p-5 transition-all duration-300 hover:bg-green/10 hover:border-green/45 shadow-[0_0_15px_rgba(61,255,160,0.02)]"
+              className="group rounded-xl border border-green/15 bg-green/[0.02] p-5 transition-all duration-300 hover:bg-green/[0.05] hover:border-green/30 shadow-[inset_0_1px_0_rgba(61,255,160,0.05)]"
             >
               <div className="text-sm font-bold text-green flex items-center gap-1.5 transition-colors group-hover:text-[#58ffb0]">
                 Quest Board
@@ -339,9 +388,9 @@ export default function Home() {
             </Link>
             <Link
               href="/dashboard"
-              className="group rounded-xl border border-white/5 bg-white/[0.01] p-5 transition-all duration-300 hover:bg-white/[0.03] hover:border-white/[0.12]"
+              className="group rounded-xl border border-[#60c8ff]/15 bg-[#60c8ff]/[0.02] p-5 transition-all duration-300 hover:bg-[#60c8ff]/0.06 hover:border-[#60c8ff]/35 shadow-[inset_0_1px_0_rgba(96,200,255,0.05)]"
             >
-              <div className="text-sm font-bold text-white flex items-center gap-1.5 transition-colors group-hover:text-green">
+              <div className="text-sm font-bold text-[#60c8ff] flex items-center gap-1.5 transition-colors group-hover:text-[#58d0ff]">
                 Collector Dashboard
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
               </div>
@@ -354,19 +403,18 @@ export default function Home() {
 
           <div className="mt-6 grid gap-3">
             {liveSurfaces.map((item) => {
-              const Icon = item.icon;
               return (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="group flex items-start gap-4 rounded-xl border border-white/[0.04] bg-white/[0.01] p-4 transition-all duration-300 hover:border-white/[0.1] hover:bg-white/[0.03]"
+                  className={`group flex items-start gap-4 rounded-xl border p-4 transition-all duration-300 ${item.border} ${item.hover}`}
                 >
-                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/5 bg-white/[0.02] transition-all duration-300 group-hover:scale-105">
-                    <Icon className={`h-4 w-4 ${item.accent}`} />
+                  <div className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border transition-all duration-300 group-hover:scale-105 ${item.iconStyle}`}>
+                    <PenguinIcon variant={item.variant} className="h-5.5 w-5.5" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-sm font-bold text-white transition-colors group-hover:text-green">
-                      {item.label}
+                    <div className={`text-sm font-bold text-white transition-colors ${item.hoverText}`}>
+                       {item.label}
                     </div>
                     <p className="mt-1 text-xs leading-relaxed text-[#aeb8af]">
                       {item.copy}
