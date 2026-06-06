@@ -54,6 +54,8 @@ export interface Quest {
 export interface User {
   id: string;
   wallet: string;
+  username?: string;
+  avatar?: string;
   xp: number;
   streak: number;
   lastCheckIn: string | null;

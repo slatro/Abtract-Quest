@@ -9,6 +9,7 @@ export async function GET() {
       wallet: true,
       xp: true,
       streak: true,
+      avatar: true,
       _count: { select: { mintRecords: true } },
     },
   });
@@ -30,6 +31,7 @@ export async function GET() {
         wallet: u.wallet,
         xp: u.xp,
         streak: u.streak,
+        avatar: u.avatar || null,
         badgeCount: u._count.mintRecords,
         masterCount,
       };

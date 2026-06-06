@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { syncOnChainBadges } from "@/lib/badgeSync";
 
 export async function GET(req: NextRequest) {
   const wallet = req.nextUrl.searchParams.get("wallet");
   if (!wallet) return NextResponse.json({ error: "wallet required" }, { status: 400 });
 
-  const user = await db.user.findUnique({
+  let user: any = null;
+  user = await db.user.findUnique({
     where: { wallet: wallet.toLowerCase() },
     include: {
       mintRecords: { select: { badgeId: true } },
@@ -15,11 +17,20 @@ export async function GET(req: NextRequest) {
 
   if (!user) return NextResponse.json({ error: "not found" }, { status: 404 });
 
+  await syncOnChainBadges(wallet, user.id);
+
+  // Re-fetch mint records to include synced ones
+  const updatedMintRecords = await db.mintRecord.findMany({
+    where: { userId: user.id },
+    select: { badgeId: true }
+  });
+  user.mintRecords = updatedMintRecords;
+
   return NextResponse.json({
     data: {
       ...user,
-      ownedBadgeIds: user.mintRecords.map((r) => r.badgeId),
-      unlockedBadgeIds: user.badgeUnlocks.map((r) => r.badgeId),
+      ownedBadgeIds: user.mintRecords.map((r: any) => r.badgeId),
+      unlockedBadgeIds: user.badgeUnlocks.map((r: any) => r.badgeId),
     },
   });
 }

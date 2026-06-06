@@ -47,6 +47,19 @@ export default function QuizPage() {
       queryClient.invalidateQueries({ queryKey: ["quiz"] });
       setResult(data.data);
       setPhase("result");
+
+      if (data.data?.passed) {
+        import("canvas-confetti").then((module) => {
+          const confetti = module.default;
+          confetti({
+            particleCount: 120,
+            spread: 70,
+            origin: { y: 0.5 },
+            colors: ["#00ff66", "#ffffff", "#eab308"],
+            zIndex: 9999
+          });
+        });
+      }
     },
   });
 
@@ -92,7 +105,7 @@ export default function QuizPage() {
           ) : (
             <button
               onClick={() => setPhase("question")}
-              className="px-8 py-3 rounded-xl bg-green text-[#061009] font-bold text-sm"
+              className="px-8 py-3 rounded-md bg-green text-[#061009] font-bold text-sm"
             >
               Start quiz
             </button>
@@ -126,7 +139,7 @@ export default function QuizPage() {
               <button
                 key={i}
                 onClick={() => handleAnswer(answer)}
-                className={`w-full text-left px-4 py-3.5 rounded-xl border text-sm transition-all ${
+                className={`w-full text-left px-4 py-3.5 rounded-md border text-sm transition-all ${
                   selected === answer
                     ? "border-green bg-green/10 text-green"
                     : "border-border bg-card hover:border-border-2 text-text"
@@ -141,7 +154,7 @@ export default function QuizPage() {
           <button
             onClick={handleNext}
             disabled={!selected}
-            className="w-full py-3.5 rounded-xl bg-green text-[#061009] font-bold text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-3.5 rounded-md bg-green text-[#061009] font-bold text-sm disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {currentQ + 1 >= quiz.questions.length ? "Submit" : "Next →"}
           </button>
@@ -160,7 +173,7 @@ export default function QuizPage() {
           </p>
 
           {result.unlockedBadgeId && (
-            <div className="bg-green/10 border border-green/20 rounded-xl p-4 mb-6">
+            <div className="bg-green/10 border border-green/20 rounded-md p-4 mb-6">
               <p className="text-sm text-green font-semibold">🏷️ Badge unlocked! Go mint it.</p>
             </div>
           )}
@@ -170,7 +183,7 @@ export default function QuizPage() {
             {result.results.map((r: any, i: number) => (
               <div
                 key={i}
-                className={`p-4 rounded-xl border text-sm ${
+                className={`p-4 rounded-md border text-sm ${
                   r.isCorrect ? "border-green/20 bg-green/5" : "border-red-400/20 bg-red-400/5"
                 }`}
               >
@@ -194,13 +207,13 @@ export default function QuizPage() {
           <div className="flex gap-3">
             <button
               onClick={() => router.push("/gallery")}
-              className="flex-1 py-3 rounded-xl bg-green text-[#061009] font-bold text-sm"
+              className="flex-1 py-3 rounded-md bg-green text-[#061009] font-bold text-sm"
             >
               View badges
             </button>
             <button
               onClick={() => router.push("/quests")}
-              className="flex-1 py-3 rounded-xl border border-border text-sm text-text-2"
+              className="flex-1 py-3 rounded-md border border-border text-sm text-text-2"
             >
               Back to quests
             </button>

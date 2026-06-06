@@ -13,39 +13,50 @@ export async function POST(req: NextRequest) {
   });
 
   const now = new Date();
-  const lastCheckIn = user.lastCheckIn;
+  const todayUtc = now.toISOString().split("T")[0];
 
   // Bugun zaten check-in yapti mi?
-  if (lastCheckIn) {
-    const last = new Date(lastCheckIn);
-    const sameDay =
-      last.getFullYear() === now.getFullYear() &&
-      last.getMonth() === now.getMonth() &&
-      last.getDate() === now.getDate();
+  if (user.lastCheckIn) {
+    const last = new Date(user.lastCheckIn);
+    const lastUtc = last.toISOString().split("T")[0];
 
-    if (sameDay) {
+    if (todayUtc === lastUtc) {
       return NextResponse.json({ error: "Already checked in today" }, { status: 429 });
     }
   }
 
   // Streak hesapla
   let newStreak = 1;
-  if (lastCheckIn) {
-    const last = new Date(lastCheckIn);
-    const diffMs = now.getTime() - last.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (user.lastCheckIn) {
+    const last = new Date(user.lastCheckIn);
+    const lastUtc = last.toISOString().split("T")[0];
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const yesterdayUtc = yesterday.toISOString().split("T")[0];
+
     // Dun check-in yaptiysa streak devam eder
-    newStreak = diffDays === 1 ? user.streak + 1 : 1;
+    if (lastUtc === yesterdayUtc) {
+      newStreak = user.streak + 1;
+    } else {
+      newStreak = 1;
+    }
   }
 
-  await db.user.update({
-    where: { id: user.id },
-    data: {
-      lastCheckIn: now,
-      streak: newStreak,
-      xp: { increment: 50 },
-    },
-  });
+  await db.$transaction([
+    db.user.update({
+      where: { id: user.id },
+      data: {
+        lastCheckIn: now,
+        streak: newStreak,
+        xp: { increment: 50 },
+      },
+    }),
+    db.questCompletion.create({
+      data: {
+        userId: user.id,
+        questId: "quest-daily-checkin",
+      },
+    }),
+  ]);
 
   // Streak badge unlock kontrolu
   const streakBadges: Record<number, number> = {

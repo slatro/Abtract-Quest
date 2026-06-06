@@ -112,25 +112,25 @@ const badgeImageById: Record<number, string> = {
 
 const sizeStyles = {
   sm: {
-    wrap: "h-16 w-16 rounded-[18px]",
+    wrap: "h-16 w-16 rounded-md",
     imagePad: "p-1.5",
     back: "text-[52px]",
     front: "text-[28px]",
   },
   md: {
-    wrap: "h-24 w-24 rounded-[24px]",
+    wrap: "h-24 w-24 rounded-md",
     imagePad: "p-2",
     back: "text-[78px]",
     front: "text-[42px]",
   },
   lg: {
-    wrap: "h-36 w-36 rounded-[28px]",
+    wrap: "h-36 w-36 rounded-md",
     imagePad: "p-3",
     back: "text-[118px]",
     front: "text-[64px]",
   },
   xl: {
-    wrap: "h-44 w-44 rounded-[34px]",
+    wrap: "h-44 w-44 rounded-md",
     imagePad: "p-4",
     back: "text-[146px]",
     front: "text-[78px]",

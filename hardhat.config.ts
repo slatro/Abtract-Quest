@@ -3,10 +3,10 @@ import "@nomicfoundation/hardhat-toolbox";
 import * as dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
-const badgeSignerPrivateKey = process.env.BADGE_SIGNER_PRIVATE_KEY;
+const deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY;
 const abstractAccounts =
-  badgeSignerPrivateKey && /^0x[0-9a-fA-F]{64}$/.test(badgeSignerPrivateKey)
-    ? [badgeSignerPrivateKey]
+  deployerPrivateKey && /^0x[0-9a-fA-F]{64}$/.test(deployerPrivateKey)
+    ? [deployerPrivateKey]
     : [];
 
 const config: HardhatUserConfig = {
@@ -19,8 +19,8 @@ const config: HardhatUserConfig = {
   },
   networks: {
     abstract: {
-      url: process.env.ABSTRACT_RPC || "https://api.mainnet.abs.xyz",
-      chainId: 2741,
+      url: process.env.ABSTRACT_RPC || "https://api.testnet.abs.xyz",
+      chainId: 11124,
       accounts: abstractAccounts,
     },
   },

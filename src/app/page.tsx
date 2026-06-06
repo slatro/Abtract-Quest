@@ -118,8 +118,8 @@ export default function Home() {
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8">
       <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="rounded-[28px] border border-border bg-[radial-gradient(circle_at_top_left,rgba(61,255,160,0.12),transparent_35%),linear-gradient(180deg,#101813_0%,#0a100d_100%)] p-8">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-green/20 bg-green/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-green">
+        <div className="rounded-md border border-border bg-[radial-gradient(circle_at_top_left,rgba(61,255,160,0.12),transparent_35%),linear-gradient(180deg,#101813_0%,#0a100d_100%)] p-8">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-sm border border-green/20 bg-green/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-green">
             Abstract Mainnet
           </div>
 
@@ -137,14 +137,14 @@ export default function Home() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/quests"
-              className="inline-flex items-center justify-center rounded-xl bg-green px-5 py-3 text-sm font-bold text-[#061009] transition-colors hover:bg-[#58ffb0]"
+              className="inline-flex items-center justify-center rounded-md bg-green px-5 py-3 text-sm font-bold text-[#061009] transition-colors hover:bg-[#58ffb0]"
             >
               Start questing
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
             <Link
               href="/gallery"
-              className="inline-flex items-center justify-center rounded-xl border border-border-2 bg-card px-5 py-3 text-sm font-semibold text-[#e8f0e9] transition-colors hover:border-green/30 hover:text-green"
+              className="inline-flex items-center justify-center rounded-md border border-border-2 bg-card px-5 py-3 text-sm font-semibold text-[#e8f0e9] transition-colors hover:border-green/30 hover:text-green"
             >
               Open gallery
             </Link>
@@ -154,11 +154,11 @@ export default function Home() {
             {[
               { value: "42", label: "Launch badges" },
               { value: "13", label: "Live quests" },
-              { value: "2741", label: "Chain ID" },
+              { value: "11124", label: "Chain ID" },
             ].map((item) => (
               <div
                 key={item.label}
-                className="rounded-2xl border border-border bg-black/10 p-4"
+                className="rounded-md border border-border bg-black/10 p-4"
               >
                 <div className="text-2xl font-bold text-[#e8f0e9]">
                   {item.value}
@@ -174,9 +174,9 @@ export default function Home() {
               return (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-border bg-black/10 p-4"
+                  className="rounded-md border border-border bg-black/10 p-4"
                 >
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl border border-green/20 bg-green/10">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md border border-green/20 bg-green/10">
                     <Icon className="h-4 w-4 text-green" />
                   </div>
                   <div className="text-sm font-semibold text-[#e8f0e9]">
@@ -191,7 +191,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="rounded-[28px] border border-border bg-card p-6">
+        <div className="rounded-md border border-border bg-card p-6">
           <div className="mb-5 flex items-center justify-between">
             <div>
               <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890]">
@@ -213,11 +213,11 @@ export default function Home() {
             {featuredBadges.map((badge) => (
               <div
                 key={badge.name}
-                className={`rounded-[22px] border border-border bg-[linear-gradient(180deg,#171f18_0%,#101512_100%)] p-4 ${badge.glow}`}
+                className={`rounded-md border border-border bg-[linear-gradient(180deg,#171f18_0%,#101512_100%)] p-4 ${badge.glow}`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-border-2 bg-[#0d1410]">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-md border border-border-2 bg-[#0d1410]">
                       <BadgeMedallion
                         badge={{
                           id: badge.id,
@@ -237,7 +237,7 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                  <span className="rounded-full border border-border bg-bg-2 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.16em] text-[#8fa890]">
+                  <span className="rounded-sm border border-border bg-bg-2 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.16em] text-[#8fa890]">
                     ERC-1155
                   </span>
                 </div>
@@ -252,9 +252,9 @@ export default function Home() {
           <Link
             key={item.href}
             href={item.href}
-            className="group rounded-3xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-border-2"
+            className="group rounded-md border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-border-2"
           >
-            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl border border-border-2 bg-bg-2 text-green">
+            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-md border border-border-2 bg-bg-2 text-green">
               <item.icon className="h-5 w-5" />
             </div>
             <h3 className="text-lg font-bold text-[#e8f0e9] transition-colors group-hover:text-green">
@@ -270,7 +270,7 @@ export default function Home() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="rounded-[28px] border border-border bg-card p-6">
+        <div className="rounded-md border border-border bg-card p-6">
           <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890]">
             Flow
           </p>
@@ -287,7 +287,7 @@ export default function Home() {
             ].map((step, index) => (
               <div
                 key={step}
-                className="flex items-center gap-4 rounded-2xl border border-border bg-bg-2 p-4"
+                className="flex items-center gap-4 rounded-md border border-border bg-bg-2 p-4"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green/10 text-sm font-bold text-green">
                   {index + 1}
@@ -298,7 +298,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="rounded-[28px] border border-border bg-[linear-gradient(180deg,#131a14_0%,#0d1410_100%)] p-6">
+        <div className="rounded-md border border-border bg-[linear-gradient(180deg,#131a14_0%,#0d1410_100%)] p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#8fa890]">
@@ -308,7 +308,7 @@ export default function Home() {
                 Open quests first, then mint from the gallery.
               </h2>
             </div>
-            <div className="rounded-2xl border border-green/20 bg-green/10 px-3 py-1.5 text-xs font-semibold text-green">
+            <div className="rounded-md border border-green/20 bg-green/10 px-3 py-1.5 text-xs font-semibold text-green">
               Recommended
             </div>
           </div>
@@ -316,7 +316,7 @@ export default function Home() {
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <Link
               href="/quests"
-              className="rounded-2xl border border-green/20 bg-green/10 p-5 transition-colors hover:bg-green/15"
+              className="rounded-md border border-green/20 bg-green/10 p-5 transition-colors hover:bg-green/15"
             >
               <div className="text-sm font-semibold text-green">Quest Board</div>
               <p className="mt-2 text-sm leading-6 text-[#d7e4d8]">
@@ -326,7 +326,7 @@ export default function Home() {
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-2xl border border-border bg-bg-2 p-5 transition-colors hover:border-border-2"
+              className="rounded-md border border-border bg-bg-2 p-5 transition-colors hover:border-border-2"
             >
               <div className="text-sm font-semibold text-[#e8f0e9]">
                 Collector Dashboard
@@ -345,9 +345,9 @@ export default function Home() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="flex items-start gap-4 rounded-2xl border border-border bg-black/10 p-4 transition-colors hover:border-border-2"
+                  className="flex items-start gap-4 rounded-md border border-border bg-black/10 p-4 transition-colors hover:border-border-2"
                 >
-                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-border-2 bg-bg-2">
+                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border-2 bg-bg-2">
                     <Icon className={`h-4 w-4 ${item.accent}`} />
                   </div>
                   <div className="min-w-0">

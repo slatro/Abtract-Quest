@@ -5,25 +5,30 @@ import type { Prisma } from "@prisma/client";
 export async function GET(req: NextRequest) {
   const wallet = req.nextUrl.searchParams.get("wallet");
   const type = req.nextUrl.searchParams.get("type");
-  const where: Prisma.QuestWhereInput = { active: true };
+  const where: any = { active: true };
 
   if (type) {
-    where.type = type.toLowerCase() as Prisma.EnumQuestTypeFilter["equals"];
+    where.type = type.toLowerCase();
   }
 
-  const quests = await db.quest.findMany({
-    where,
-  });
+  let quests: any[] = [];
+  quests = await db.quest.findMany({ where });
 
   if (!wallet) return NextResponse.json({ data: quests });
 
-  const user = await db.user.findUnique({ where: { wallet: wallet.toLowerCase() } });
+  let user: any = null;
+  try {
+    user = await db.user.findUnique({ where: { wallet: wallet.toLowerCase() } });
+  } catch (error) {}
   if (!user) return NextResponse.json({ data: quests.map((q) => ({ ...q, completed: false })) });
 
-  const completions = await db.questCompletion.findMany({
-    where: { userId: user.id },
-    orderBy: { completedAt: "desc" },
-  });
+  let completions: any[] = [];
+  try {
+    completions = await db.questCompletion.findMany({
+      where: { userId: user.id },
+      orderBy: { completedAt: "desc" },
+    });
+  } catch (error) {}
 
   const completionMap = new Map<string, Date>();
   for (const c of completions) {
@@ -32,7 +37,23 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  const now = new Date();
+  const todayUtc = now.toISOString().split("T")[0];
+  const sameDay = user.lastCheckIn && (
+    new Date(user.lastCheckIn).toISOString().split("T")[0] === todayUtc
+  );
+
   const questsWithStatus = quests.map((q) => {
+    if (q.id === "quest-daily-checkin") {
+      return {
+        ...q,
+        completed: !!sameDay,
+        onCooldown: !!sameDay,
+        lastCompleted: user.lastCheckIn,
+        streak: user.streak,
+      };
+    }
+
     const lastCompleted = completionMap.get(q.id);
     if (!lastCompleted) return { ...q, completed: false };
 

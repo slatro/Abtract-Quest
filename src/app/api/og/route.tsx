@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
 
   const badgeCount = user?._count.mintRecords ?? 0;
   const xp = user?.xp ?? 0;
-  const short = wallet ? `${wallet.slice(0, 6)}...${wallet.slice(-4)}` : "Unknown";
+  const displayName = user?.username || (wallet ? `${wallet.slice(0, 6)}...${wallet.slice(-4)}` : "Unknown");
+  const showWalletUnder = user?.username ? (wallet ? `${wallet.slice(0, 6)}...${wallet.slice(-4)}` : "") : "";
 
   return new ImageResponse(
     (
@@ -34,7 +35,10 @@ export async function GET(req: NextRequest) {
         <div style={{ color: "#3dffa0", fontSize: 28, fontWeight: 700, marginBottom: 8 }}>
           Abstract Quests
         </div>
-        <div style={{ color: "#e8f0e9", fontSize: 20, marginBottom: 24 }}>{short}</div>
+        <div style={{ color: "#e8f0e9", fontSize: 24, fontWeight: 700, marginBottom: showWalletUnder ? 4 : 24 }}>{displayName}</div>
+        {showWalletUnder ? (
+          <div style={{ color: "#4a6b50", fontSize: 16, marginBottom: 24 }}>{showWalletUnder}</div>
+        ) : null}
         <div style={{ display: "flex", gap: 32 }}>
           <div style={{ textAlign: "center" }}>
             <div style={{ color: "#3dffa0", fontSize: 36, fontWeight: 700 }}>{badgeCount}</div>

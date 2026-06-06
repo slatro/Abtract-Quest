@@ -31,11 +31,18 @@ export async function POST(req: NextRequest) {
     create: { wallet: wallet.toLowerCase() },
   });
 
-  // Cooldown kontrolü
   const lastCompletion = await db.questCompletion.findFirst({
     where: { userId: user.id, questId },
     orderBy: { completedAt: "desc" },
   });
+
+  if (quest.type === "streak") {
+    const match = quest.id.match(/quest-streak-(\d+)/);
+    const requiredStreak = match ? parseInt(match[1]) : 0;
+    if (user.streak < requiredStreak) {
+      return NextResponse.json({ error: `Requires a ${requiredStreak}-day streak.` }, { status: 400 });
+    }
+  }
 
   if (lastCompletion) {
     const cooldownMs = quest.cooldownMin * 60 * 1000;

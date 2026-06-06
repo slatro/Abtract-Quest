@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { AbstractWalletProvider } from "@abstract-foundation/agw-react";
-import { abstractMainnet, config } from "@/lib/wagmi";
+import { abstractTestnet, config } from "@/lib/wagmi";
 import { useState } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -12,7 +12,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <AbstractWalletProvider chain={abstractMainnet}>
+        <AbstractWalletProvider chain={abstractTestnet}>
           {children}
         </AbstractWalletProvider>
       </QueryClientProvider>

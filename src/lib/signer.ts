@@ -46,7 +46,7 @@ export async function signUnlockPayload(
 
   const client = createWalletClient({
     account,
-    transport: http(),
+    transport: http("https://api.testnet.abs.xyz"),
   });
 
   const signature = await client.signTypedData({

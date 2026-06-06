@@ -19,6 +19,15 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  if (wallet) {
+    const userWallet = wallet.toLowerCase();
+    await db.user.upsert({
+      where: { wallet: userWallet },
+      update: { xp: { increment: 5 } },
+      create: { wallet: userWallet, xp: 5 },
+    });
+  }
+
   // Hangi URL'yi kullanacagiz
   const url = project.referralUrl ?? project.websiteUrl;
 

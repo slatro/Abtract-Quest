@@ -3,22 +3,22 @@ import { BadgeMedallion } from "./BadgeMedallion";
 
 const rarityStyles: Record<string, string> = {
   common:
-    "border-white/8 bg-[linear-gradient(180deg,#121313_0%,#0b0c0c_100%)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.24)]",
+    "border-white/20 bg-[#020202]/85 backdrop-blur-2xl hover:border-white/80 hover:shadow-[0_0_20px_rgba(255,255,255,0.4)]",
   uncommon:
-    "border-green/12 bg-[linear-gradient(180deg,#111513_0%,#0b0d0c_100%)] hover:shadow-[0_18px_40px_rgba(61,255,160,0.1)]",
+    "border-[#00ff66]/30 bg-[#020202]/85 backdrop-blur-2xl hover:border-[#00ff66] hover:shadow-[0_0_20px_rgba(0,255,102,0.6)]",
   rare:
-    "border-blue-300/12 bg-[linear-gradient(180deg,#11141a_0%,#0b0d11_100%)] hover:shadow-[0_18px_42px_rgba(96,200,255,0.12)]",
+    "border-[#00ffff]/30 bg-[#020202]/85 backdrop-blur-2xl hover:border-[#00ffff] hover:shadow-[0_0_20px_rgba(0,255,255,0.6)]",
   epic:
-    "border-purple-300/12 bg-[linear-gradient(180deg,#15121b_0%,#0c0b10_100%)] hover:shadow-[0_18px_42px_rgba(180,122,255,0.14)]",
+    "border-[#ff00ff]/30 bg-[#020202]/85 backdrop-blur-2xl hover:border-[#ff00ff] hover:shadow-[0_0_20px_rgba(255,0,255,0.6)]",
   legendary:
-    "border-yellow-300/14 bg-[linear-gradient(180deg,#18150f_0%,#0d0c0a_100%)] hover:shadow-[0_18px_44px_rgba(255,215,0,0.16)]",
+    "border-[#ffd700]/30 bg-[#020202]/85 backdrop-blur-2xl hover:border-[#ffd700] hover:shadow-[0_0_20px_rgba(255,215,0,0.6)]",
 };
 
 const rarityLabelStyles: Record<string, string> = {
   common: "chip-muted",
   uncommon: "chip-green",
-  rare: "border border-blue-300/15 bg-blue-300/10 text-blue-200",
-  epic: "border border-purple-300/15 bg-purple-300/10 text-purple-200",
+  rare: "border border-[#00ffff] text-[#00ffff] bg-[#00ffff]/10 shadow-[0_0_5px_rgba(0,255,255,0.3)]",
+  epic: "border border-[#ff00ff] text-[#ff00ff] bg-[#ff00ff]/10 shadow-[0_0_5px_rgba(255,0,255,0.3)]",
   legendary: "chip-gold",
 };
 
@@ -31,16 +31,11 @@ const rarityGlowStyles: Record<string, string> = {
 };
 
 const rarityHeroStyles: Record<string, string> = {
-  common:
-    "bg-[radial-gradient(circle_at_50%_18%,rgba(61,255,160,0.11),transparent_34%),radial-gradient(circle_at_20%_82%,rgba(210,255,226,0.05),transparent_28%),linear-gradient(180deg,#141a16_0%,#0f1411_100%)]",
-  uncommon:
-    "bg-[radial-gradient(circle_at_50%_18%,rgba(61,255,160,0.16),transparent_34%),radial-gradient(circle_at_22%_80%,rgba(181,255,214,0.07),transparent_28%),linear-gradient(180deg,#101912_0%,#0d1310_100%)]",
-  rare:
-    "bg-[radial-gradient(circle_at_50%_18%,rgba(96,200,255,0.18),transparent_34%),radial-gradient(circle_at_22%_80%,rgba(182,232,255,0.07),transparent_28%),linear-gradient(180deg,#111924_0%,#0d1218_100%)]",
-  epic:
-    "bg-[radial-gradient(circle_at_50%_18%,rgba(180,122,255,0.18),transparent_34%),radial-gradient(circle_at_22%_80%,rgba(227,198,255,0.07),transparent_28%),linear-gradient(180deg,#161320_0%,#100d15_100%)]",
-  legendary:
-    "bg-[radial-gradient(circle_at_50%_18%,rgba(255,215,0,0.18),transparent_34%),radial-gradient(circle_at_22%_80%,rgba(255,238,166,0.07),transparent_28%),linear-gradient(180deg,#1b170e_0%,#13100c_100%)]",
+  common: "bg-[#020202] border border-white/10",
+  uncommon: "bg-[#020202] border border-[#00ff66]/20",
+  rare: "bg-[#020202] border border-[#00ffff]/20",
+  epic: "bg-[#020202] border border-[#ff00ff]/20",
+  legendary: "bg-[#020202] border border-[#ffd700]/20",
 };
 
 interface Props {
@@ -50,6 +45,7 @@ interface Props {
 
 export function BadgeCard({ badge, onClick }: Props) {
   const isLocked = !badge.owned && !badge.unlocked;
+  const isMintable = badge.unlocked && !badge.owned;
   const statusLabel = badge.owned
     ? "Owned"
     : badge.unlocked
@@ -60,10 +56,11 @@ export function BadgeCard({ badge, onClick }: Props) {
     <div
       onClick={() => onClick(badge)}
       className={`
-        relative mx-auto w-full max-w-[198px] overflow-hidden rounded-[20px] border p-3 cursor-pointer transition-all duration-200
-        hover:-translate-y-0.5 ${rarityStyles[badge.rarity]}
+        relative w-full overflow-hidden rounded-md border p-3 cursor-pointer transition-all duration-300 ease-out
+        hover:scale-[1.03] hover:-translate-y-1 hover:z-10 ${rarityStyles[badge.rarity]}
         ${badge.owned ? "opacity-100" : ""}
-        ${isLocked ? "opacity-50" : ""}
+        ${isLocked ? "opacity-90 grayscale-[40%]" : ""}
+        ${isMintable ? "animate-pulse-neon" : ""}
       `}
     >
       <div className={`pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b ${rarityGlowStyles[badge.rarity]}`} />
@@ -77,21 +74,21 @@ export function BadgeCard({ badge, onClick }: Props) {
         </span>
       </div>
 
-      <div className="relative mb-3 mx-auto h-[148px] w-[148px]">
-        <div className={`relative h-full w-full rounded-[14px] overflow-hidden ${rarityHeroStyles[badge.rarity]}`}>
+      <div className="relative mb-3 mx-auto aspect-square w-full max-w-[148px]">
+        <div className={`relative h-full w-full rounded-md overflow-hidden ${rarityHeroStyles[badge.rarity]}`}>
           <div className="absolute inset-0 flex items-center justify-center p-2">
             <BadgeMedallion badge={badge} size="lg" framed={false} />
           </div>
         </div>
 
-        <div className="absolute right-0 top-0 z-10 translate-x-[18%] flex items-center gap-2">
+        <div className="absolute right-1 top-1 z-10 flex items-center gap-2">
           <span
-            className={`inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold backdrop-blur-md ${
+            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold backdrop-blur-md ${
               badge.owned
                 ? "bg-green text-[#061009]"
                 : badge.unlocked
-                  ? "bg-white/10 text-white/85"
-                  : "bg-black/35 text-white/58"
+                  ? "bg-white/10 text-white"
+                  : "bg-black/40 text-white/60"
             }`}
           >
             {statusLabel}

@@ -1,19 +1,15 @@
-import { createConfig, http } from "wagmi";
-import type { Chain } from "viem";
+import { createConfig, http, createStorage } from "wagmi";
+import { abstractTestnet as viemAbstractTestnet } from "viem/chains";
 
-export const abstractMainnet: Chain = {
-  id: 2741,
-  name: "Abstract",
-  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-  rpcUrls: {
-    default: { http: ["https://api.mainnet.abs.xyz"] },
-    public: { http: ["https://api.mainnet.abs.xyz"] },
-  },
-};
+export const abstractTestnet = viemAbstractTestnet;
 
 export const config = createConfig({
-  chains: [abstractMainnet],
+  chains: [abstractTestnet],
+  ssr: true,
+  storage: createStorage({
+    storage: typeof window !== "undefined" ? window.localStorage : undefined,
+  }),
   transports: {
-    [abstractMainnet.id]: http("https://api.mainnet.abs.xyz"),
+    [abstractTestnet.id]: http("https://api.testnet.abs.xyz"),
   },
 });
