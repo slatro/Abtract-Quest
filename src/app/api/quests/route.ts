@@ -3,7 +3,8 @@ import { db } from "@/lib/db";
 import type { Prisma } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
-  const wallet = req.nextUrl.searchParams.get("wallet");
+  const walletParam = req.nextUrl.searchParams.get("wallet");
+  const wallet = walletParam && walletParam !== "undefined" && walletParam !== "null" ? walletParam : null;
   const type = req.nextUrl.searchParams.get("type");
   const where: any = { active: true };
 
@@ -14,7 +15,9 @@ export async function GET(req: NextRequest) {
   let quests: any[] = [];
   quests = await db.quest.findMany({ where });
 
-  if (!wallet) return NextResponse.json({ data: quests });
+  if (!wallet) {
+    return NextResponse.json({ data: quests.map((q) => ({ ...q, completed: false })) });
+  }
 
   let user: any = null;
   try {

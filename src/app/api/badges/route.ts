@@ -5,7 +5,8 @@ import { getUnlockedBadgeIds } from "@/lib/badgeUnlocks";
 import { syncOnChainBadges } from "@/lib/badgeSync";
 
 export async function GET(req: NextRequest) {
-  const wallet = req.nextUrl.searchParams.get("wallet");
+  const walletParam = req.nextUrl.searchParams.get("wallet");
+  const wallet = walletParam && walletParam !== "undefined" && walletParam !== "null" ? walletParam : null;
   const rarity = req.nextUrl.searchParams.get("rarity");
   const setName = req.nextUrl.searchParams.get("set");
   const where: any = {
@@ -22,7 +23,14 @@ export async function GET(req: NextRequest) {
     orderBy: [{ setName: "asc" }, { id: "asc" }],
   });
 
-  if (!wallet) return NextResponse.json({ data: badges });
+  if (!wallet) {
+    const badgesWithoutUserState = badges.map((b) => ({
+      ...b,
+      owned: false,
+      unlocked: !b.requiresUnlock,
+    }));
+    return NextResponse.json({ data: badgesWithoutUserState });
+  }
 
   let user: any = null;
   try {

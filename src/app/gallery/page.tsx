@@ -23,16 +23,22 @@ export default function GalleryPage() {
   const [filter, setFilter] = useState("All");
   const [selected, setSelected] = useState<Badge | null>(null);
 
+  const cleanAddress = address && (address as string) !== "undefined" && (address as string) !== "null" ? address : undefined;
+
   const { data, isLoading } = useQuery({
-    queryKey: ["badges", address],
+    queryKey: ["badges", cleanAddress],
     queryFn: async () => {
-      const url = address
-        ? `/api/badges?wallet=${address}`
+      const url = cleanAddress
+        ? `/api/badges?wallet=${cleanAddress}`
         : "/api/badges";
       const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error("Failed to fetch badges");
+      }
       const json = await res.json();
       return json.data as Badge[];
     },
+    enabled: typeof window !== "undefined",
   });
 
   useEffect(() => {

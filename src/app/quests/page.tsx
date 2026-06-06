@@ -69,14 +69,20 @@ export default function QuestsPage() {
     return () => clearInterval(timer);
   }, []);
 
+  const cleanAddress = address && (address as string) !== "undefined" && (address as string) !== "null" ? address : undefined;
+
   const { data: quests = [], isLoading } = useQuery({
-    queryKey: ["quests", address],
+    queryKey: ["quests", cleanAddress],
     queryFn: async () => {
-      const url = address ? `/api/quests?wallet=${address}` : "/api/quests";
+      const url = cleanAddress ? `/api/quests?wallet=${cleanAddress}` : "/api/quests";
       const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error("Failed to fetch quests");
+      }
       const json = await res.json();
       return json.data ?? [];
     },
+    enabled: typeof window !== "undefined",
   });
 
   const checkInMutation = useMutation({
