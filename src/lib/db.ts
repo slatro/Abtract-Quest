@@ -7,22 +7,14 @@ const globalForPrisma = globalThis as unknown as {
 
 export let db: PrismaClient;
 
-if (process.env.NODE_ENV === "production") {
+if (!globalForPrisma.prisma) {
   const adapter = new PrismaPg({
     connectionString: process.env.DATABASE_URL!,
   });
-  db = new PrismaClient({
+  globalForPrisma.prisma = new PrismaClient({
     adapter,
+    log: process.env.NODE_ENV === "development" ? ["error"] : [],
   });
-} else {
-  if (!globalForPrisma.prisma) {
-    const adapter = new PrismaPg({
-      connectionString: process.env.DATABASE_URL!,
-    });
-    globalForPrisma.prisma = new PrismaClient({
-      adapter,
-      log: ["error"],
-    });
-  }
-  db = globalForPrisma.prisma;
 }
+
+db = globalForPrisma.prisma;
