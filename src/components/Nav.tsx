@@ -102,7 +102,7 @@ export function Nav() {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col">
         {/* Top Row: Logo & Wallet */}
         <div className="flex items-center justify-between h-16 mt-2">
-          <Link href="/" prefetch={false} className="flex items-center gap-3.5 font-bold text-sm text-[#e8f0e9] shrink min-w-0 group translate-y-5 -translate-x-4">
+          <Link href="/" prefetch={false} className="flex items-center gap-3.5 font-bold text-sm text-[#e8f0e9] shrink min-w-0 group -translate-x-4">
             <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform duration-700 ease-out group-hover:rotate-90 group-hover:scale-110">
               <path d="M20 4L34 12V28L20 36L6 28V12L20 4Z" stroke="url(#logo-grad-1)" strokeWidth="2.5" strokeLinejoin="round" fill="none"/>
               <path d="M20 12L27 16V24L20 28L13 24V16L20 12Z" stroke="url(#logo-grad-1)" strokeWidth="1.8" strokeLinejoin="round" fill="none"/>
