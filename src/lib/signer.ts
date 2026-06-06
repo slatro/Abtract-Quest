@@ -3,10 +3,6 @@ import { privateKeyToAccount } from "viem/accounts";
 import { UnlockPayload } from "@/types";
 import { randomBytes } from "crypto";
 
-const account = privateKeyToAccount(
-  process.env.BADGE_SIGNER_PRIVATE_KEY as `0x${string}`
-);
-
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 const CHAIN_ID = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || "2741");
 
@@ -32,6 +28,9 @@ export async function signUnlockPayload(
   wallet: `0x${string}`,
   badgeId: number
 ): Promise<{ payload: UnlockPayload; signature: `0x${string}` }> {
+  const pk = process.env.BADGE_SIGNER_PRIVATE_KEY || "0x0000000000000000000000000000000000000000000000000000000000000000";
+  const account = privateKeyToAccount(pk as `0x${string}`);
+
   const nonce = ("0x" + randomBytes(32).toString("hex")) as `0x${string}`;
   const expiry = Math.floor(Date.now() / 1000) + 600; // 10 dakika geçerli
 
