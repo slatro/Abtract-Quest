@@ -13,16 +13,24 @@ function shuffleArray<T>(arr: T[]): { items: T[]; originalIndices: number[] } {
   };
 }
 
+import { STATIC_QUIZZES } from "@/lib/staticData";
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ quizId: string }> }
 ) {
   const { quizId } = await params;
 
-  const quiz = await db.quiz.findUnique({
-    where: { id: quizId },
-    include: { questions: true },
-  });
+  let quiz: any = null;
+  try {
+    quiz = await db.quiz.findUnique({
+      where: { id: quizId },
+      include: { questions: true },
+    });
+  } catch (error) {
+    console.error("Database connection failed for quiz details, using static fallback:", error);
+    quiz = STATIC_QUIZZES.find((q) => q.id === quizId) || null;
+  }
 
   if (!quiz) return NextResponse.json({ error: "Quiz not found" }, { status: 404 });
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import type { Prisma } from "@prisma/client";
+import { STATIC_QUESTS } from "@/lib/staticData";
 
 export async function GET(req: NextRequest) {
   const walletParam = req.nextUrl.searchParams.get("wallet");
@@ -13,7 +14,15 @@ export async function GET(req: NextRequest) {
   }
 
   let quests: any[] = [];
-  quests = await db.quest.findMany({ where });
+  try {
+    quests = await db.quest.findMany({ where });
+  } catch (error) {
+    console.error("Database connection failed, using static quests fallback:", error);
+    quests = STATIC_QUESTS.filter((q) => {
+      if (type && q.type !== type.toLowerCase()) return false;
+      return q.active;
+    });
+  }
 
   if (!wallet) {
     return NextResponse.json({ data: quests.map((q) => ({ ...q, completed: false })) });

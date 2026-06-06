@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import type { Prisma } from "@prisma/client";
 import { getUnlockedBadgeIds } from "@/lib/badgeUnlocks";
 import { syncOnChainBadges } from "@/lib/badgeSync";
+import { STATIC_BADGES } from "@/lib/staticData";
 
 export async function GET(req: NextRequest) {
   const walletParam = req.nextUrl.searchParams.get("wallet");
@@ -18,10 +19,19 @@ export async function GET(req: NextRequest) {
   }
 
   let badges: any[] = [];
-  badges = await db.badge.findMany({
-    where,
-    orderBy: [{ setName: "asc" }, { id: "asc" }],
-  });
+  try {
+    badges = await db.badge.findMany({
+      where,
+      orderBy: [{ setName: "asc" }, { id: "asc" }],
+    });
+  } catch (error) {
+    console.error("Database connection failed, using static badges fallback:", error);
+    badges = STATIC_BADGES.filter((b) => {
+      if (setName && b.setName !== setName) return false;
+      if (rarity && b.rarity !== rarity.toLowerCase()) return false;
+      return true;
+    });
+  }
 
   if (!wallet) {
     const badgesWithoutUserState = badges.map((b) => ({
