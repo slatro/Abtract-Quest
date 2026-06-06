@@ -10,9 +10,10 @@ export default function LeaderboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: leaderboard = [], isLoading } = useQuery({
-    queryKey: ["leaderboard"],
+    queryKey: ["leaderboard", address],
     queryFn: async () => {
-      const res = await fetch("/api/leaderboard");
+      const url = address ? `/api/leaderboard?wallet=${address}` : "/api/leaderboard";
+      const res = await fetch(url);
       const json = await res.json();
       return json.data ?? [];
     },
