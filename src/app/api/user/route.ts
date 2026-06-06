@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
         id: "mock-user-id",
         wallet: wallet.toLowerCase(),
         username: "Abstract Explorer",
-        avatar: "astronaut_penguin",
+        avatar: "astronaut",
         xp: 1500,
         streak: 1,
         ownedBadgeIds: [],
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
         id: "mock-user-id",
         wallet: wallet.toLowerCase(),
         username: "Abstract Explorer",
-        avatar: "astronaut_penguin",
+        avatar: "astronaut",
         xp: 1500,
         streak: 1,
       }
