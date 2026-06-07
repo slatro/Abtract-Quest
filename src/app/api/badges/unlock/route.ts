@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       badge = STATIC_BADGES.find((b) => b.id === Number(badgeId));
     }
 
-    if (!badge || !badge.active) {
+    if (!badge || badge.active === false) {
       return NextResponse.json({ error: "Badge not available" }, { status: 404 });
     }
 
