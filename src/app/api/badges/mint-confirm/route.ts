@@ -19,9 +19,20 @@ export async function POST(req: NextRequest) {
   }
 
   // Idempotent — aynı txHash iki kez gelirse tekrar kaydetme
-  console.time("MINT-CONFIRM DB IDEMPOTENCY");
-  const existing = await db.mintRecord.findUnique({ where: { txHash } });
-  console.timeEnd("MINT-CONFIRM DB IDEMPOTENCY");
+  let existing = null;
+  try {
+    console.time("MINT-CONFIRM DB IDEMPOTENCY");
+    existing = await db.mintRecord.findUnique({ where: { txHash } });
+    console.timeEnd("MINT-CONFIRM DB IDEMPOTENCY");
+  } catch (dbError) {
+    console.error("Database connection failed during idempotency check, using mock state:", dbError);
+    const mockState = await getMockState();
+    if (mockState.ownedBadges.includes(Number(badgeId))) {
+      console.timeEnd("MINT-CONFIRM TOTAL");
+      return NextResponse.json({ data: { alreadyRecorded: true } });
+    }
+  }
+
   if (existing) {
     console.timeEnd("MINT-CONFIRM TOTAL");
     return NextResponse.json({ data: { alreadyRecorded: true } });
@@ -121,32 +132,36 @@ export async function POST(req: NextRequest) {
   console.timeEnd("MINT-CONFIRM DB TRANSACTION");
 
   console.time("MINT-CONFIRM DB SET CHECK");
-  if (badge && !badge.isMaster) {
-    const setMembers = await db.badge.findMany({
-      where: { setName: badge.setName, isMaster: false },
-      select: { id: true },
-    });
-
-    const ownedInSet = await db.mintRecord.findMany({
-      where: {
-        userId: user.id,
-        badgeId: { in: setMembers.map((member) => member.id) },
-      },
-      select: { badgeId: true },
-    });
-
-    const ownedIds = new Set(ownedInSet.map((record) => record.badgeId));
-    const fullSetOwned = setMembers.every((member) => ownedIds.has(member.id));
-
-    if (fullSetOwned) {
-      const masterBadge = await db.badge.findFirst({
-        where: { setName: badge.setName, isMaster: true },
+  try {
+    if (badge && !badge.isMaster) {
+      const setMembers = await db.badge.findMany({
+        where: { setName: badge.setName, isMaster: false },
         select: { id: true },
       });
-      if (masterBadge) {
-        await persistBadgeUnlock(user.id, masterBadge.id, "full_set", badge.setName);
+
+      const ownedInSet = await db.mintRecord.findMany({
+        where: {
+          userId: user.id,
+          badgeId: { in: setMembers.map((member) => member.id) },
+        },
+        select: { badgeId: true },
+      });
+
+      const ownedIds = new Set(ownedInSet.map((record) => record.badgeId));
+      const fullSetOwned = setMembers.every((member) => ownedIds.has(member.id));
+
+      if (fullSetOwned) {
+        const masterBadge = await db.badge.findFirst({
+          where: { setName: badge.setName, isMaster: true },
+          select: { id: true },
+        });
+        if (masterBadge) {
+          await persistBadgeUnlock(user.id, masterBadge.id, "full_set", badge.setName);
+        }
       }
     }
+  } catch (error) {
+    console.error("Database connection failed during set completeness check, skipping persistence:", error);
   }
   console.timeEnd("MINT-CONFIRM DB SET CHECK");
 
