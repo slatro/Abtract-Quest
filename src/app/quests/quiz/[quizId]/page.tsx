@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import { useParams, useRouter } from "next/navigation";
@@ -63,16 +63,18 @@ export default function QuizPage() {
     },
   });
 
-  function handleAnswer(answerText: string) {
-    if (selected) return;
-    setSelected(answerText);
-  }
+  const [timeLeft, setTimeLeft] = useState(15);
+  const selectedRef = useRef<string | null>(null);
 
-  function handleNext() {
-    if (!selected || !quiz) return;
+  useEffect(() => {
+    selectedRef.current = selected;
+  }, [selected]);
+
+  function goNext(chosenAnswer: string | null) {
+    if (!quiz) return;
 
     const question = quiz.questions[currentQ];
-    const newAnswers = [...answers, { questionId: question.id, answerText: selected }];
+    const newAnswers = [...answers, { questionId: question.id, answerText: chosenAnswer || "" }];
     setAnswers(newAnswers);
     setSelected(null);
 
@@ -81,6 +83,33 @@ export default function QuizPage() {
     } else {
       setCurrentQ(currentQ + 1);
     }
+  }
+
+  useEffect(() => {
+    if (phase !== "question") return;
+
+    setTimeLeft(15);
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          goNext(selectedRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [currentQ, phase, quiz]);
+
+  function handleAnswer(answerText: string) {
+    setSelected(answerText);
+  }
+
+  function handleNext() {
+    if (!selected || !quiz) return;
+    goNext(selected);
   }
 
   if (isLoading) return <div className="text-sm text-text-2 p-8">Loading quiz...</div>;
@@ -120,6 +149,9 @@ export default function QuizPage() {
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-text-2 font-mono">
               {currentQ + 1} / {quiz.questions.length}
+            </span>
+            <span className={`text-sm font-bold font-mono ${timeLeft <= 5 ? "text-red-400 animate-pulse font-extrabold" : "text-green"}`}>
+              ⏱️ {timeLeft}s
             </span>
             <span className="text-xs text-text-2">{quiz.title}</span>
           </div>
