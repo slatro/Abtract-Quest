@@ -50,7 +50,7 @@ export function getUnlockedBadgeIds(user: UserWithProgress, badges: Badge[]) {
   const unlockedIds = new Set<number>(user.badgeUnlocks.map((unlock) => unlock.badgeId));
 
   for (const badge of badges) {
-    if (!badge.requiresUnlock) unlockedIds.add(badge.id);
+    if (!badge.requiresUnlock && !badge.isMaster) unlockedIds.add(badge.id);
   }
 
   for (const completion of user.questCompletions) {

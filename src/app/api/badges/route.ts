@@ -84,11 +84,23 @@ export async function GET(req: NextRequest) {
 
   if (!user) {
     const mockState = await getMockState();
-    const badgesWithState = badges.map((b) => ({
-      ...b,
-      owned: mockState.ownedBadges.includes(b.id),
-      unlocked: mockState.ownedBadges.includes(b.id) || mockState.unlockedBadges.includes(b.id) || !b.requiresUnlock,
-    }));
+    const ownedSet = new Set(mockState.ownedBadges);
+    const badgesWithState = badges.map((b) => {
+      let isUnlocked = mockState.ownedBadges.includes(b.id) || mockState.unlockedBadges.includes(b.id);
+      if (!b.requiresUnlock && !b.isMaster) {
+        isUnlocked = true;
+      }
+      if (b.isMaster) {
+        const setMembers = badges.filter((item) => item.setName === b.setName && !item.isMaster);
+        const memberIds = setMembers.map((item) => item.id);
+        isUnlocked = memberIds.every((id) => ownedSet.has(id));
+      }
+      return {
+        ...b,
+        owned: ownedSet.has(b.id),
+        unlocked: isUnlocked,
+      };
+    });
     return NextResponse.json({ data: badgesWithState });
   }
 
