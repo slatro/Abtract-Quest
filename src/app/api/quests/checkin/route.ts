@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { persistBadgeUnlock } from "@/lib/badgeUnlocks";
+import { getMockState, saveMockState } from "@/lib/mockCookies";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,9 +17,22 @@ export async function POST(req: NextRequest) {
       });
     } catch (dbError) {
       console.error("Database connection failed during check-in, using mock fallback:", dbError);
+      
+      const mockState = await getMockState();
+      const newStreak = mockState.lastCheckIn ? mockState.streak + 1 : 1; // simple increment
+      const nowStr = new Date().toISOString();
+      const updatedQuests = Array.from(new Set([...mockState.completedQuests, "quest-daily-checkin"]));
+      
+      await saveMockState({
+        lastCheckIn: nowStr,
+        streak: newStreak,
+        xp: mockState.xp + 50,
+        completedQuests: updatedQuests,
+      });
+
       return NextResponse.json({
         data: {
-          streak: 1,
+          streak: newStreak,
           xpGained: 50,
           unlockedBadgeId: null,
         },

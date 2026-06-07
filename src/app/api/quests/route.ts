@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import type { Prisma } from "@prisma/client";
 import { STATIC_QUESTS } from "@/lib/staticData";
 
+import { getMockState } from "@/lib/mockCookies";
+
 export async function GET(req: NextRequest) {
   const walletParam = req.nextUrl.searchParams.get("wallet");
   const wallet = walletParam && walletParam !== "undefined" && walletParam !== "null" ? walletParam : null;
@@ -32,7 +34,36 @@ export async function GET(req: NextRequest) {
   try {
     user = await db.user.findUnique({ where: { wallet: wallet.toLowerCase() } });
   } catch (error) {}
-  if (!user) return NextResponse.json({ data: quests.map((q) => ({ ...q, completed: false })) });
+  
+  if (!user) {
+    const mockState = await getMockState();
+    const todayUtc = new Date().toISOString().split("T")[0];
+    const sameDay = mockState.lastCheckIn && (
+      mockState.lastCheckIn.split("T")[0] === todayUtc
+    );
+    
+    const questsWithStatus = quests.map((q) => {
+      if (q.id === "quest-daily-checkin") {
+        return {
+          ...q,
+          completed: !!sameDay,
+          onCooldown: !!sameDay,
+          lastCompleted: mockState.lastCheckIn,
+          streak: mockState.streak,
+        };
+      }
+      
+      const isCompleted = mockState.completedQuests.includes(q.id);
+      return {
+        ...q,
+        completed: isCompleted,
+        onCooldown: isCompleted,
+        lastCompleted: isCompleted ? new Date().toISOString() : null,
+      };
+    });
+    
+    return NextResponse.json({ data: questsWithStatus });
+  }
 
   let completions: any[] = [];
   try {

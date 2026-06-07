@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { syncOnChainBadges } from "@/lib/badgeSync";
+import { getMockState } from "@/lib/mockCookies";
 
 export async function GET(req: NextRequest) {
   const wallet = req.nextUrl.searchParams.get("wallet");
@@ -34,17 +35,17 @@ export async function GET(req: NextRequest) {
 
   } catch (error) {
     console.error("Database connection failed for user profile, using mock fallback:", error);
-    // Return a mock user profile when DB is down
+    const mockState = await getMockState();
     return NextResponse.json({
       data: {
         id: "mock-user-id",
         wallet: wallet.toLowerCase(),
         username: "Abstract Explorer",
         avatar: "astronaut",
-        xp: 1500,
-        streak: 1,
-        ownedBadgeIds: [],
-        unlockedBadgeIds: [],
+        xp: mockState.xp || 0,
+        streak: mockState.streak || 0,
+        ownedBadgeIds: mockState.ownedBadges,
+        unlockedBadgeIds: mockState.unlockedBadges,
       }
     });
   }

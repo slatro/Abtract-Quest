@@ -4,6 +4,7 @@ import type { Prisma } from "@prisma/client";
 import { getUnlockedBadgeIds } from "@/lib/badgeUnlocks";
 import { syncOnChainBadges } from "@/lib/badgeSync";
 import { STATIC_BADGES } from "@/lib/staticData";
+import { getMockState } from "@/lib/mockCookies";
 
 export async function GET(req: NextRequest) {
   const walletParam = req.nextUrl.searchParams.get("wallet");
@@ -82,12 +83,13 @@ export async function GET(req: NextRequest) {
   }
 
   if (!user) {
-    const badgesWithoutUserState = badges.map((b) => ({
+    const mockState = await getMockState();
+    const badgesWithState = badges.map((b) => ({
       ...b,
-      owned: false,
-      unlocked: !b.requiresUnlock,
+      owned: mockState.ownedBadges.includes(b.id),
+      unlocked: mockState.ownedBadges.includes(b.id) || mockState.unlockedBadges.includes(b.id) || !b.requiresUnlock,
     }));
-    return NextResponse.json({ data: badgesWithoutUserState });
+    return NextResponse.json({ data: badgesWithState });
   }
 
   const ownedIds = new Set(user.mintRecords.map((m: any) => m.badgeId));

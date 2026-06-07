@@ -5,6 +5,8 @@ import { rateLimit, getIP } from "@/lib/rateLimit";
 import { isBlocked } from "@/lib/checkBlocklist";
 import { verifyTurnstile } from "@/lib/verifyTurnstile";
 import { getUnlockedBadgeIds } from "@/lib/badgeUnlocks";
+import { getMockState } from "@/lib/mockCookies";
+import { STATIC_BADGES } from "@/lib/staticData";
 
 export async function POST(req: NextRequest) {
   // IP başına dakikada 10 unlock isteği
@@ -43,82 +45,129 @@ export async function POST(req: NextRequest) {
   const walletLower = wallet.toLowerCase();
 
   // Daha önce mint etmiş mi?
-  const existing = await db.mintRecord.findFirst({
-    where: {
-      badgeId: Number(badgeId),
-      user: { wallet: walletLower },
-    },
-  });
+  let existing = null;
+  try {
+    existing = await db.mintRecord.findFirst({
+      where: {
+        badgeId: Number(badgeId),
+        user: { wallet: walletLower },
+      },
+    });
+  } catch (dbError) {
+    console.error("Database connection failed during unlock check, using mock verification:", dbError);
+    const mockState = await getMockState();
+    if (mockState.ownedBadges.includes(Number(badgeId))) {
+      return NextResponse.json({ error: "Already minted" }, { status: 409 });
+    }
+  }
 
   if (existing) {
     return NextResponse.json({ error: "Already minted" }, { status: 409 });
   }
 
   // Badge var mı ve unlock gerekiyor mu?
-  const badge = await db.badge.findUnique({ where: { id: Number(badgeId) } });
+  let badge: any = null;
+  try {
+    badge = await db.badge.findUnique({ where: { id: Number(badgeId) } });
+  } catch (dbError) {
+    console.error("Database connection failed, loading static badge info:", dbError);
+    badge = STATIC_BADGES.find((b) => b.id === Number(badgeId));
+  }
+
   if (!badge || !badge.active) {
     return NextResponse.json({ error: "Badge not available" }, { status: 404 });
   }
 
-  const badges = await db.badge.findMany({
-    orderBy: [{ setName: "asc" }, { id: "asc" }],
-  });
+  let badges: any[] = [];
+  try {
+    badges = await db.badge.findMany({
+      orderBy: [{ setName: "asc" }, { id: "asc" }],
+    });
+  } catch (dbError) {
+    console.error("Database connection failed, loading static badges list:", dbError);
+    badges = STATIC_BADGES;
+  }
 
-  const user = await db.user.upsert({
-    where: { wallet: walletLower },
-    update: {},
-    create: { wallet: walletLower },
-  });
+  let user: any = null;
+  let userWithProgress: any = null;
+  try {
+    user = await db.user.upsert({
+      where: { wallet: walletLower },
+      update: {},
+      create: { wallet: walletLower },
+    });
 
-  const userWithProgress = await db.user.findUnique({
-    where: { id: user.id },
-    include: {
-      mintRecords: { select: { badgeId: true } },
-      badgeUnlocks: { select: { badgeId: true } },
-      questCompletions: {
-        include: {
-          quest: { select: { badgeId: true } },
+    userWithProgress = await db.user.findUnique({
+      where: { id: user.id },
+      include: {
+        mintRecords: { select: { badgeId: true } },
+        badgeUnlocks: { select: { badgeId: true } },
+        questCompletions: {
+          include: {
+            quest: { select: { badgeId: true } },
+          },
+        },
+        quizAttempts: {
+          where: { passed: true },
+          include: {
+            quiz: { select: { badgeId: true } },
+          },
         },
       },
-      quizAttempts: {
-        where: { passed: true },
-        include: {
-          quiz: { select: { badgeId: true } },
-        },
-      },
-    },
-  });
+    });
+  } catch (dbError) {
+    console.error("Database connection failed, loading mock user details:", dbError);
+  }
 
   if (!userWithProgress) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
+    // DB offline, check cookie state
+    const mockState = await getMockState();
+    const unlockedSet = new Set(mockState.unlockedBadges);
+    if (badge.requiresUnlock && !unlockedSet.has(Number(badgeId))) {
+      return NextResponse.json({ error: "Badge not unlocked yet" }, { status: 403 });
+    }
 
-  const unlockedIds = getUnlockedBadgeIds(userWithProgress, badges);
-  if (badge.requiresUnlock && !unlockedIds.has(Number(badgeId))) {
-    return NextResponse.json({ error: "Badge not unlocked yet" }, { status: 403 });
-  }
+    if (badge.isMaster) {
+      const setMembers = badges.filter((item) => item.setName === badge.setName && !item.isMaster);
+      const memberIds = setMembers.map((item) => item.id);
+      const ownedSet = new Set(mockState.ownedBadges);
+      const fullSetOwned = memberIds.every((id) => ownedSet.has(id));
+      if (!fullSetOwned) {
+        return NextResponse.json({ error: "Complete the full set first" }, { status: 403 });
+      }
+    }
+  } else {
+    const unlockedIds = getUnlockedBadgeIds(userWithProgress, badges);
+    if (badge.requiresUnlock && !unlockedIds.has(Number(badgeId))) {
+      return NextResponse.json({ error: "Badge not unlocked yet" }, { status: 403 });
+    }
 
-  if (badge.isMaster) {
-    const setMembers = badges.filter((item) => item.setName === badge.setName && !item.isMaster);
-    const memberIds = setMembers.map((item) => item.id);
-    const ownedIds = new Set(userWithProgress.mintRecords.map((record) => record.badgeId));
-    const fullSetOwned = memberIds.every((id) => ownedIds.has(id));
-    if (!fullSetOwned) {
-      return NextResponse.json({ error: "Complete the full set first" }, { status: 403 });
+    if (badge.isMaster) {
+      const setMembers = badges.filter((item) => item.setName === badge.setName && !item.isMaster);
+      const memberIds = setMembers.map((item) => item.id);
+      const ownedIds = new Set(userWithProgress.mintRecords.map((record: any) => record.badgeId));
+      const fullSetOwned = memberIds.every((id) => ownedIds.has(id));
+      if (!fullSetOwned) {
+        return NextResponse.json({ error: "Complete the full set first" }, { status: 403 });
+      }
     }
   }
 
   const result = await signUnlockPayload(wallet as `0x${string}`, Number(badgeId));
 
-  // Nonce'u DB'ye kaydet
-  await db.mintNonce.create({
-    data: {
-      nonce: result.payload.nonce,
-      wallet: walletLower,
-      badgeId: Number(badgeId),
-      expiry: new Date(result.payload.expiry * 1000),
-    },
-  });
+  try {
+    // Nonce'u DB'ye kaydet
+    await db.mintNonce.create({
+      data: {
+        nonce: result.payload.nonce,
+        wallet: walletLower,
+        badgeId: Number(badgeId),
+        expiry: new Date(result.payload.expiry * 1000),
+      },
+    });
+  } catch (dbError) {
+    console.error("Database connection failed when saving nonce, skipping persistence:", dbError);
+  }
 
   return NextResponse.json({ data: result });
 }

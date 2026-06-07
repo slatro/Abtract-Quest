@@ -4,6 +4,7 @@ import { rateLimit, getIP } from "@/lib/rateLimit";
 import { isBlocked } from "@/lib/checkBlocklist";
 import { persistBadgeUnlock } from "@/lib/badgeUnlocks";
 import { STATIC_QUESTS } from "@/lib/staticData";
+import { getMockState, saveMockState } from "@/lib/mockCookies";
 
 export async function POST(req: NextRequest) {
   try {
@@ -43,6 +44,20 @@ export async function POST(req: NextRequest) {
       });
     } catch (dbError) {
       console.error("Database connection failed when updating user for quest, using mock fallback:", dbError);
+      
+      const mockState = await getMockState();
+      const updatedQuests = Array.from(new Set([...mockState.completedQuests, questId]));
+      const unlockedBadges = mockState.unlockedBadges;
+      if (quest.badgeId && !unlockedBadges.includes(quest.badgeId)) {
+        unlockedBadges.push(quest.badgeId);
+      }
+
+      await saveMockState({
+        completedQuests: updatedQuests,
+        xp: mockState.xp + quest.xpReward,
+        unlockedBadges,
+      });
+
       return NextResponse.json({
         data: { success: true, xpGained: quest.xpReward, badgeId: quest.badgeId },
       });

@@ -96,11 +96,25 @@ export function MintModal({ badge, onClose }: Props) {
       });
 
       if (!unlockRes.ok) {
-        const err = await unlockRes.json();
-        throw new Error(err.error || "Unlock failed");
+        const errText = await unlockRes.text().catch(() => "");
+        let errMsg = "Unlock failed";
+        try {
+          const errJson = JSON.parse(errText);
+          errMsg = errJson.error || errMsg;
+        } catch (_) {
+          errMsg = errText || errMsg;
+        }
+        throw new Error(errMsg);
       }
 
-      const { data }: { data: UnlockSignatureResponse } = await unlockRes.json();
+      const rawData = await unlockRes.text();
+      let data: UnlockSignatureResponse;
+      try {
+        const json = JSON.parse(rawData);
+        data = json.data;
+      } catch (e) {
+        throw new Error("Invalid response payload from server");
+      }
 
       // 2. Awaiting Wallet Approval
       setMintStep("wallet");
